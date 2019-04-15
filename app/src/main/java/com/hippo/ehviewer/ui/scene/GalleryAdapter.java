@@ -193,6 +193,7 @@ abstract class GalleryAdapter extends RecyclerView.Adapter<GalleryHolder> {
         switch (mType) {
             default:
             case TYPE_LIST: {
+                holder.gi=gi;
                 holder.thumb.load(EhCacheKeyFactory.getThumbKey(gi.gid), gi.thumb);
                 holder.title.setText(EhUtils.getSuitableTitle(gi));
                 holder.uploader.setText(gi.uploader);
