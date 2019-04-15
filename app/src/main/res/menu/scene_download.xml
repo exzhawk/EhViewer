@@ -35,5 +35,9 @@
       android:id="@+id/action_reset_reading_progress"
       android:title="@string/download_reset_reading_progress"
       app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_select_all"
+        android:title="Select All"
+        app:showAsAction="never" />
 
 </menu>
