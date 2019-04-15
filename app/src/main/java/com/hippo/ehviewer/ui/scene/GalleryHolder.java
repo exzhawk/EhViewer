@@ -16,15 +16,20 @@
 
 package com.hippo.ehviewer.ui.scene;
 
+import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 import com.hippo.ehviewer.R;
+import com.hippo.ehviewer.client.data.GalleryInfo;
+import com.hippo.ehviewer.ui.CommonOperations;
+import com.hippo.ehviewer.ui.MainActivity;
 import com.hippo.ehviewer.widget.SimpleRatingView;
 import com.hippo.widget.LoadImageView;
 
-class GalleryHolder extends RecyclerView.ViewHolder {
+class GalleryHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     public final LoadImageView thumb;
     public final TextView title;
@@ -36,6 +41,8 @@ class GalleryHolder extends RecyclerView.ViewHolder {
     public final TextView simpleLanguage;
     public final ImageView favourited;
     public final ImageView downloaded;
+    public final ImageView start2;
+    public GalleryInfo gi;
 
     public GalleryHolder(View itemView) {
         super(itemView);
@@ -50,5 +57,19 @@ class GalleryHolder extends RecyclerView.ViewHolder {
         simpleLanguage = itemView.findViewById(R.id.simple_language);
         favourited = itemView.findViewById(R.id.favourited);
         downloaded = itemView.findViewById(R.id.downloaded);
+        start2 = itemView.findViewById(R.id.start2);
+        start2.setOnClickListener(this);
+
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (start2 == v && gi != null) {
+            Context a = v.getContext();
+            if (a instanceof MainActivity){
+                CommonOperations.startDownload((MainActivity) a, gi, true);
+                Log.v("233", "download " + gi.title);
+            }
+        }
     }
 }
