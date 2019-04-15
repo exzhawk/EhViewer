@@ -499,6 +499,11 @@ public class DownloadsScene extends ToolbarScene
                         }).show();
                 return true;
             }
+            case R.id.action_select_all:{
+                EasyRecyclerView recyclerView = mRecyclerView;
+                recyclerView.intoCustomChoiceMode();
+                recyclerView.checkAll();
+            }
         }
         return false;
     }
