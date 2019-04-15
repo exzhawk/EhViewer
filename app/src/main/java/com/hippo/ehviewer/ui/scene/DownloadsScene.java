@@ -76,6 +76,8 @@ import com.hippo.ehviewer.dao.DownloadInfo;
 import com.hippo.ehviewer.dao.DownloadLabel;
 import com.hippo.ehviewer.download.DownloadManager;
 import com.hippo.ehviewer.download.DownloadService;
+import com.hippo.ehviewer.gallery.EhGalleryProvider;
+import com.hippo.ehviewer.gallery.GalleryProvider2;
 import com.hippo.ehviewer.spider.SpiderDen;
 import com.hippo.ehviewer.ui.GalleryActivity;
 import com.hippo.ehviewer.ui.MainActivity;
@@ -1072,6 +1074,7 @@ public class DownloadsScene extends ToolbarScene
         public final ProgressBar progressBar;
         public final TextView percent;
         public final TextView speed;
+        public final TextView readProgress;
 
         public DownloadHolder(View itemView) {
             super(itemView);
@@ -1087,6 +1090,7 @@ public class DownloadsScene extends ToolbarScene
             progressBar = (ProgressBar) itemView.findViewById(R.id.progress_bar);
             percent = (TextView) itemView.findViewById(R.id.percent);
             speed = (TextView) itemView.findViewById(R.id.speed);
+            readProgress = itemView.findViewById(R.id.read_progress);
 
             // TODO cancel on click listener when select items
             thumb.setOnClickListener(this);
@@ -1172,12 +1176,16 @@ public class DownloadsScene extends ToolbarScene
             return holder;
         }
 
+        @SuppressLint("SetTextI18n")
         @Override
         public void onBindViewHolder(DownloadHolder holder, int position) {
             if (mList == null) {
                 return;
             }
             DownloadInfo info = mList.get(position);
+            GalleryProvider2 galleryProvider = new EhGalleryProvider(getActivity2(),info);
+            galleryProvider.start();
+            holder.readProgress.setText(galleryProvider.getStartPage()+"/"+galleryProvider.size());
             holder.thumb.load(EhCacheKeyFactory.getThumbKey(info.gid), info.thumb,
                     new ThumbDataContainer(info), true);
             holder.title.setText(EhUtils.getSuitableTitle(info));

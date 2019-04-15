@@ -139,5 +139,16 @@
           android:layout_marginRight="8dp"
           android:textSize="@dimen/text_super_small"/>
 
+        <TextView
+            android:id="@+id/read_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/category"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="0dp"
+            android:layout_toEndOf="@+id/category"
+            android:layout_toRightOf="@+id/category" />
+
     </RelativeLayout>
 </androidx.cardview.widget.CardView>
