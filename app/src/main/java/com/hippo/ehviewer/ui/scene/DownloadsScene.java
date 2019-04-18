@@ -473,11 +473,11 @@ public class DownloadsScene extends ToolbarScene
     public boolean onMenuItemClick(MenuItem item) {
         // Skip when in choice mode
         Activity activity = getActivity2();
-        if (null == activity || null == mRecyclerView || mRecyclerView.isInCustomChoice()) {
+        int id = item.getItemId();
+        if ((null == activity || null == mRecyclerView || mRecyclerView.isInCustomChoice()) && item.getItemId() != R.id.action_select_below) {
             return false;
         }
 
-        int id = item.getItemId();
         switch (id) {
             case R.id.action_start_all: {
                 Intent intent = new Intent(activity, DownloadService.class);
@@ -506,6 +506,29 @@ public class DownloadsScene extends ToolbarScene
                 EasyRecyclerView recyclerView = mRecyclerView;
                 recyclerView.intoCustomChoiceMode();
                 recyclerView.checkAll();
+                return true;
+            }
+            case R.id.action_edit_mode: {
+                mRecyclerView.intoCustomChoiceMode();
+                return true;
+            }
+            case R.id.action_select_below: {
+                EasyRecyclerView recyclerView = mRecyclerView;
+                if (recyclerView.isInCustomChoice()) {
+                    SparseBooleanArray stateArray = recyclerView.getCheckedItemPositions();
+                    int firstSelectedIndex = -1;
+                    for (int i = 0, n = stateArray.size(); i < n; i++) {
+                        if (stateArray.valueAt(i)) {
+                            firstSelectedIndex = stateArray.keyAt(i);
+                            break;
+                        }
+                    }
+                    if (firstSelectedIndex > -1 && mAdapter != null)
+                        for (int i = firstSelectedIndex, n = mAdapter.getItemCount(); i < n; i++) {
+                            recyclerView.setItemChecked(i, true);
+                        }
+                }
+                return true;
             }
         }
         return false;

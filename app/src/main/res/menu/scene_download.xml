@@ -37,7 +37,15 @@
       app:showAsAction="never"/>
     <item
         android:id="@+id/action_select_all"
-        android:title="Select All"
+        android:title="Select all"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_edit_mode"
+        android:title="Edit mode"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_select_below"
+        android:title="Select below"
         app:showAsAction="never" />
 
 </menu>
