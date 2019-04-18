@@ -68,7 +68,6 @@ class GalleryHolder extends RecyclerView.ViewHolder implements View.OnClickListe
             Context a = v.getContext();
             if (a instanceof MainActivity){
                 CommonOperations.startDownload((MainActivity) a, gi, true);
-                Log.v("233", "download " + gi.title);
             }
         }
     }
