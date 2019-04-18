@@ -121,7 +121,9 @@ public class DownloadsScene extends ToolbarScene
     private static final String KEY_LABEL = "label";
 
     public static final String ACTION_CLEAR_DOWNLOAD_SERVICE = "clear_download_service";
+    private static final int REQUEST_GALLERY_CLOSE = 0;
 
+    private int lastPosition;
     /*---------------
      Whole life cycle
      ---------------*/
@@ -684,8 +686,18 @@ public class DownloadsScene extends ToolbarScene
             Intent intent = new Intent(activity, GalleryActivity.class);
             intent.setAction(GalleryActivity.ACTION_EH);
             intent.putExtra(GalleryActivity.KEY_GALLERY_INFO, list.get(position));
-            startActivity(intent);
+            lastPosition = position;
+            startActivityForResult(intent, REQUEST_GALLERY_CLOSE);
             return true;
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (REQUEST_GALLERY_CLOSE == requestCode) {
+            if (mAdapter != null) {
+                mAdapter.notifyItemChanged(lastPosition);
+            }
         }
     }
 
