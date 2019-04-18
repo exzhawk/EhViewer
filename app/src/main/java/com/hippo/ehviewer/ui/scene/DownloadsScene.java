@@ -58,6 +58,7 @@ import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.hippo.android.resource.AttrResources;
 import com.hippo.app.CheckBoxDialogBuilder;
+import com.hippo.beerbelly.SimpleDiskCache;
 import com.hippo.conaco.DataContainer;
 import com.hippo.conaco.ProgressNotifier;
 import com.hippo.drawerlayout.DrawerLayout;
@@ -76,9 +77,8 @@ import com.hippo.ehviewer.dao.DownloadInfo;
 import com.hippo.ehviewer.dao.DownloadLabel;
 import com.hippo.ehviewer.download.DownloadManager;
 import com.hippo.ehviewer.download.DownloadService;
-import com.hippo.ehviewer.gallery.EhGalleryProvider;
-import com.hippo.ehviewer.gallery.GalleryProvider2;
 import com.hippo.ehviewer.spider.SpiderDen;
+import com.hippo.ehviewer.spider.SpiderInfo;
 import com.hippo.ehviewer.ui.GalleryActivity;
 import com.hippo.ehviewer.ui.MainActivity;
 import com.hippo.ehviewer.widget.SimpleRatingView;
@@ -105,6 +105,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import static com.hippo.ehviewer.spider.SpiderQueen.SPIDER_INFO_FILENAME;
 
 public class DownloadsScene extends ToolbarScene
         implements DownloadManager.DownloadInfoListener,
@@ -1210,6 +1211,43 @@ public class DownloadsScene extends ToolbarScene
             return holder;
         }
 
+        private SpiderInfo readSpiderInfoFromLocalByInfo(DownloadInfo info) {
+            // Read from download dir
+            SpiderDen spiderDen = new SpiderDen(info);
+            UniFile downloadDir = spiderDen.getDownloadDir();
+            if (downloadDir != null) {
+                UniFile file = downloadDir.findFile(SPIDER_INFO_FILENAME);
+                SpiderInfo spiderInfo = SpiderInfo.read(file);
+                if (spiderInfo != null && spiderInfo.gid == info.gid &&
+                        spiderInfo.token.equals(info.token)) {
+                    return spiderInfo;
+                }
+            }
+
+            // Read from cache
+            Context context = getActivity2();
+            EhApplication application = (EhApplication) context.getApplicationContext();
+            SimpleDiskCache spiderInfoCache= EhApplication.getSpiderInfoCache(application);
+            InputStreamPipe pipe = spiderInfoCache.getInputStreamPipe(Long.toString(info.gid));
+            if (null != pipe) {
+                try {
+                    pipe.obtain();
+                    SpiderInfo spiderInfo = SpiderInfo.read(pipe.open());
+                    if (spiderInfo != null && spiderInfo.gid == info.gid &&
+                            spiderInfo.token.equals(info.token)) {
+                        return spiderInfo;
+                    }
+                } catch (IOException e) {
+                    // Ignore
+                } finally {
+                    pipe.close();
+                    pipe.release();
+                }
+            }
+
+            return null;
+        }
+
         @SuppressLint("SetTextI18n")
         @Override
         public void onBindViewHolder(DownloadHolder holder, int position) {
@@ -1217,9 +1255,14 @@ public class DownloadsScene extends ToolbarScene
                 return;
             }
             DownloadInfo info = mList.get(position);
-            GalleryProvider2 galleryProvider = new EhGalleryProvider(getActivity2(),info);
-            galleryProvider.start();
-            holder.readProgress.setText(galleryProvider.getStartPage()+"/"+galleryProvider.size());
+            SpiderInfo spiderInfo = readSpiderInfoFromLocalByInfo(info);
+            if (spiderInfo == null) {
+                holder.readProgress.setText("");
+            } else {
+                holder.readProgress.setText((spiderInfo.startPage + 1) + "/" + spiderInfo.pages);
+                int read255th = spiderInfo.startPage * 255 / (spiderInfo.pages - 1);
+                holder.readProgress.setTextColor(Color.rgb(255 - read255th, read255th, 0));
+            }
             holder.thumb.load(EhCacheKeyFactory.getThumbKey(info.gid), info.thumb,
                     new ThumbDataContainer(info), true);
             holder.title.setText(EhUtils.getSuitableTitle(info));
