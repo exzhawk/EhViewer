@@ -533,6 +533,16 @@ public class DownloadsScene extends ToolbarScene
                 }
                 return true;
             }
+            case R.id.action_select_read: {
+                mRecyclerView.intoCustomChoiceMode();
+                for (int i = 0, n = mAdapter.getItemCount(); i < n; i++) {
+                    SpiderInfo spiderInfo = mAdapter.readSpiderInfoFromLocalByInfo(mList.get(i));
+                    if (spiderInfo != null && spiderInfo.startPage > 0) {
+                        mRecyclerView.setItemChecked(i, true);
+                    }
+                }
+                return true;
+            }
         }
         return false;
     }
