@@ -47,5 +47,9 @@
         android:id="@+id/action_select_below"
         android:title="Select below"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_select_read"
+        android:title="Select read"
+        app:showAsAction="never" />
 
 </menu>
