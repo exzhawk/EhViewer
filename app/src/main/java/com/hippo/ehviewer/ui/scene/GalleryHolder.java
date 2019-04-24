@@ -42,6 +42,7 @@ class GalleryHolder extends RecyclerView.ViewHolder implements View.OnClickListe
     public final ImageView favourited;
     public final ImageView downloaded;
     public final ImageView start2;
+    public final TextView readProgress;
     public GalleryInfo gi;
 
     public GalleryHolder(View itemView) {
@@ -59,6 +60,7 @@ class GalleryHolder extends RecyclerView.ViewHolder implements View.OnClickListe
         downloaded = itemView.findViewById(R.id.downloaded);
         start2 = itemView.findViewById(R.id.start2);
         start2.setOnClickListener(this);
+        readProgress=itemView.findViewById(R.id.read_progress);
 
     }
 
