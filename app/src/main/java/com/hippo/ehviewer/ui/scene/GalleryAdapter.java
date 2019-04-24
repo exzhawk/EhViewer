@@ -16,7 +16,10 @@
 
 package com.hippo.ehviewer.ui.scene;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -29,6 +32,8 @@ import androidx.annotation.Nullable;
 import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+
+import com.hippo.beerbelly.SimpleDiskCache;
 import com.hippo.drawable.TriangleDrawable;
 import com.hippo.easyrecyclerview.MarginItemDecoration;
 import com.hippo.ehviewer.EhApplication;
@@ -37,12 +42,21 @@ import com.hippo.ehviewer.Settings;
 import com.hippo.ehviewer.client.EhCacheKeyFactory;
 import com.hippo.ehviewer.client.EhUtils;
 import com.hippo.ehviewer.client.data.GalleryInfo;
+import com.hippo.ehviewer.dao.DownloadInfo;
 import com.hippo.ehviewer.download.DownloadManager;
+import com.hippo.ehviewer.spider.SpiderDen;
+import com.hippo.ehviewer.spider.SpiderInfo;
 import com.hippo.ehviewer.widget.TileThumb;
+import com.hippo.streampipe.InputStreamPipe;
+import com.hippo.unifile.UniFile;
 import com.hippo.widget.recyclerview.AutoStaggeredGridLayoutManager;
 import com.hippo.yorozuya.ViewUtils;
+
+import java.io.IOException;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+
+import static com.hippo.ehviewer.spider.SpiderQueen.SPIDER_INFO_FILENAME;
 
 abstract class GalleryAdapter extends RecyclerView.Adapter<GalleryHolder> {
 
@@ -183,6 +197,44 @@ abstract class GalleryAdapter extends RecyclerView.Adapter<GalleryHolder> {
     @Nullable
     public abstract GalleryInfo getDataAt(int position);
 
+    private SpiderInfo readSpiderInfoFromLocalByInfo(GalleryInfo info) {
+        // Read from download dir
+        SpiderDen spiderDen = new SpiderDen(info);
+        UniFile downloadDir = spiderDen.getDownloadDir();
+        if (downloadDir != null) {
+            UniFile file = downloadDir.findFile(SPIDER_INFO_FILENAME);
+            SpiderInfo spiderInfo = SpiderInfo.read(file);
+            if (spiderInfo != null && spiderInfo.gid == info.gid &&
+                    spiderInfo.token.equals(info.token)) {
+                return spiderInfo;
+            }
+        }
+
+        // Read from cache
+        Context context = mRecyclerView.getContext();
+        EhApplication application = (EhApplication) context.getApplicationContext();
+        SimpleDiskCache spiderInfoCache= EhApplication.getSpiderInfoCache(application);
+        InputStreamPipe pipe = spiderInfoCache.getInputStreamPipe(Long.toString(info.gid));
+        if (null != pipe) {
+            try {
+                pipe.obtain();
+                SpiderInfo spiderInfo = SpiderInfo.read(pipe.open());
+                if (spiderInfo != null && spiderInfo.gid == info.gid &&
+                        spiderInfo.token.equals(info.token)) {
+                    return spiderInfo;
+                }
+            } catch (IOException e) {
+                // Ignore
+            } finally {
+                pipe.close();
+                pipe.release();
+            }
+        }
+
+        return null;
+    }
+
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(GalleryHolder holder, int position) {
         GalleryInfo gi = getDataAt(position);
@@ -194,6 +246,14 @@ abstract class GalleryAdapter extends RecyclerView.Adapter<GalleryHolder> {
             default:
             case TYPE_LIST: {
                 holder.gi=gi;
+                SpiderInfo spiderInfo = readSpiderInfoFromLocalByInfo(gi);
+                if (spiderInfo == null) {
+                    holder.readProgress.setText("");
+                } else {
+                    holder.readProgress.setText((spiderInfo.startPage + 1) + "/" + spiderInfo.pages);
+                    int read255th = spiderInfo.startPage * 255 / (spiderInfo.pages - 1);
+                    holder.readProgress.setTextColor(Color.rgb(255 - read255th, read255th, 0));
+                }
                 holder.thumb.load(EhCacheKeyFactory.getThumbKey(gi.gid), gi.thumb);
                 holder.title.setText(EhUtils.getSuitableTitle(gi));
                 holder.uploader.setText(gi.uploader);
