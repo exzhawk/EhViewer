@@ -51,5 +51,9 @@
         android:id="@+id/action_select_read"
         android:title="Select read"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_start_all_reversed"
+        android:title="Start all (reversed)"
+        app:showAsAction="never" />
 
 </menu>
