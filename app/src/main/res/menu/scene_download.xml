@@ -55,5 +55,8 @@
         android:id="@+id/action_start_all_reversed"
         android:title="Start all (reversed)"
         app:showAsAction="never" />
+    <item android:id="@+id/action_select_done"
+        android:title="Select Done"
+        app:showAsAction="never"></item>
 
 </menu>
