@@ -1288,7 +1288,7 @@ public class DownloadsScene extends ToolbarScene
                 holder.readProgress.setText("");
             } else {
                 holder.readProgress.setText((spiderInfo.startPage + 1) + "/" + spiderInfo.pages);
-                int read255th = spiderInfo.startPage * 255 / (spiderInfo.pages - 1);
+                int read255th = spiderInfo.startPage * 255 / spiderInfo.pages;
                 holder.readProgress.setTextColor(Color.rgb(255 - read255th, read255th, 0));
             }
             holder.thumb.load(EhCacheKeyFactory.getThumbKey(info.gid), info.thumb,
