@@ -279,6 +279,7 @@ public class DownloadService extends Service implements DownloadManager.Download
 
     @Override
     public void onGet509() {
+        mDownloadManager.stopAllDownload();
         if (mNotifyManager == null) {
             return;
         }
