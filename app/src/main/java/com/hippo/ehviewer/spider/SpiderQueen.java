@@ -38,6 +38,7 @@ import com.hippo.ehviewer.client.EhRequestBuilder;
 import com.hippo.ehviewer.client.EhUrl;
 import com.hippo.ehviewer.client.data.GalleryInfo;
 import com.hippo.ehviewer.client.data.PreviewSet;
+import com.hippo.ehviewer.client.exception.EhException;
 import com.hippo.ehviewer.client.exception.Image509Exception;
 import com.hippo.ehviewer.client.exception.ParseException;
 import com.hippo.ehviewer.client.parser.GalleryDetailParser;
@@ -1036,15 +1037,23 @@ public final class SpiderQueen implements Runnable {
         }
 
         private GalleryPageParser.Result fetchPageResultFromHtml(int index, String pageUrl) throws Throwable {
-            GalleryPageParser.Result result = EhEngine.getGalleryPage(null, mHttpClient, pageUrl, mGalleryInfo.gid, mGalleryInfo.token);
-            if (StringUtils.endsWith(result.imageUrl, URL_509_SUFFIX_ARRAY)) {
-                // Get 509
-                // Notify listeners
-                notifyGet509(index);
-                throw new Image509Exception();
-            }
+            try {
+                GalleryPageParser.Result result = EhEngine.getGalleryPage(null, mHttpClient, pageUrl, mGalleryInfo.gid, mGalleryInfo.token);
+                if (StringUtils.endsWith(result.imageUrl, URL_509_SUFFIX_ARRAY)) {
+                    // Get 509
+                    // Notify listeners
+                    notifyGet509(index);
+                    throw new Image509Exception();
+                }
 
-            return result;
+                return result;
+            }catch (EhException e){
+                if(e.getMessage().startsWith("Your IP address has been")){
+                    notifyGet509(index);
+                    throw new Image509Exception();
+                }
+                throw e;
+            }
         }
 
         private GalleryPageApiParser.Result fetchPageResultFromApi(long gid, int index, String pToken, String showKey, String previousPToken) throws Throwable {
