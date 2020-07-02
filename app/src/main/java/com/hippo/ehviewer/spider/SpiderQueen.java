@@ -176,6 +176,7 @@ public final class SpiderQueen implements Runnable {
 
     private final int mWorkerMaxCount;
     private final int mPreloadNumber;
+    private final int mDownloadDelay;
 
     private SpiderQueen(EhApplication application, @NonNull GalleryInfo galleryInfo) {
         mHttpClient = EhApplication.getOkHttpClient(application);
@@ -193,6 +194,7 @@ public final class SpiderQueen implements Runnable {
         mWorkerPoolExecutor = new ThreadPoolExecutor(mWorkerMaxCount, mWorkerMaxCount,
                 0, TimeUnit.SECONDS, new LinkedBlockingDeque<Runnable>(),
                 new PriorityThreadFactory(SpiderWorker.class.getSimpleName(), Process.THREAD_PRIORITY_BACKGROUND));
+        mDownloadDelay = Settings.getDownloadDelay();
     }
 
     public void addOnSpiderListener(OnSpiderListener listener) {
@@ -1320,6 +1322,11 @@ public final class SpiderQueen implements Runnable {
 
                     // Download finished
                     updatePageState(index, STATE_FINISHED);
+                    try {
+                        Thread.sleep(mDownloadDelay);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     return true;
                 } catch (IOException e) {
                     e.printStackTrace();

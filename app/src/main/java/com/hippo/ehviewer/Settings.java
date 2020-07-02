@@ -676,6 +676,17 @@ public class Settings {
         putIntToStr(KEY_MULTI_THREAD_DOWNLOAD, value);
     }
 
+    private static final String KEY_DOWNLOAD_DELAY = "download_delay";
+    private static final int DEFAULT_DOWNLOAD_DELAY = 0;
+
+    public static int getDownloadDelay() {
+        return getIntFromStr(KEY_DOWNLOAD_DELAY, DEFAULT_DOWNLOAD_DELAY);
+    }
+
+    public static void putDownloadDelay(int value) {
+        putIntToStr(KEY_DOWNLOAD_DELAY, value);
+    }
+
     private static final String KEY_PRELOAD_IMAGE = "preload_image";
     private static final int DEFAULT_PRELOAD_IMAGE = 5;
 
