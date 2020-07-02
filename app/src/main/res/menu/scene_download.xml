@@ -37,26 +37,26 @@
       app:showAsAction="never"/>
     <item
         android:id="@+id/action_select_all"
-        android:title="Select all"
+        android:title="@string/download_select_all"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_edit_mode"
-        android:title="Edit mode"
+        android:title="@string/download_edit_mode"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_select_below"
-        android:title="Select below"
+        android:title="@string/download_select_below"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_select_read"
-        android:title="Select read"
+        android:title="@string/download_select_read"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_start_all_reversed"
-        android:title="Start all (reversed)"
+        android:title="@string/download_start_all_reversed"
         app:showAsAction="never" />
     <item android:id="@+id/action_select_done"
-        android:title="Select Done"
-        app:showAsAction="never"></item>
+        android:title="@string/download_select_done"
+        app:showAsAction="never" />
 
 </menu>

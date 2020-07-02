@@ -333,6 +333,14 @@
     <string name="download_labels">下载标签</string>
     <string name="download_start_all">全部开始</string>
     <string name="download_stop_all">全部停止</string>
+    <string name="download_select_all">全选</string>
+    <string name="download_edit_mode">进入选择模式</string>
+    <string name="download_select_below">选择下方条目</string>
+    <string name="download_select_read">选择已读(至少两页)</string>
+    <string name="download_start_all_reversed">全部开始(逆序)</string>
+    <string name="download_select_done">选择已完成</string>
+    <string name="settings_download_download_delay">下载延迟</string>
+    <string name="settings_download_download_delay_summary">下载每张图片后延迟 %s 毫秒</string>
     <string name="download_reset_reading_progress">重置阅读进度</string>
     <string name="reset_reading_progress_message">重置所有已下载画廊的阅读进度？</string>
     <string name="download_service_label">EhViewer 下载服务</string>
