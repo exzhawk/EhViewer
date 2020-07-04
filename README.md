@@ -1,3 +1,5 @@
+# EhViewer Mod version by Epix
+
 More info (Chinese): https://blog.exz.me/post/ehviewer-mod/
 
 Modifications:
