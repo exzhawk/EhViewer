@@ -1,5 +1,9 @@
 # EhViewer Mod version by Epix
 
+WARN: The apk file signature is NOT same as official version(by seven332). You may have to uninstall official version to install this one. Export your data in official version, uninstall and install this one, import your data in this version. You can use Titanium Backup or other common method to keep data.
+
+注意, 下载的 APK 签名与原版不同, 可能需要先卸载官方版. 可以通过 app 内置的导出功能: 官方版内导出数据, 卸载官方版, 安装 mod 版, mod 版内导入数据. 也可以直接使用钛备份等一般方法保留数据.
+
 More info (Chinese): https://blog.exz.me/post/ehviewer-mod/
 
 Modifications:
