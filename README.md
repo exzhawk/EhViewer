@@ -1,3 +1,27 @@
+More info (Chinese): https://blog.exz.me/post/ehviewer-mod/
+
+Modifications:
+
+* Add more buttons to upper right menu in download scene. Select all, Edit mode, Selec below, Select read(at least read 2 pages), Start All (Reversed), Select done.
+* Add a button to each gallery item in list view. Click it to add to download queue immediately without open detail or long press. Only show when the gallery has not been added to download or read yet.
+* Show read progress/total page count in download and gallery scene. Use color to indicate read process. Red for not read yet and green for finished reading.
+* When viewing pictures, press/hold on slide bar to jump to page immediately without releasing touch.
+* Stop all downloads when encountering 509 or IP ban.
+* Allow delay between picture downloads to slow down to prevent IP ban.
+
+修改内容:
+
+* 在下载界面内, 右上角菜单增加若干按钮, 分别是: 全选, 进入选择模式, 选择已选择条目及以下所有条目, 选择已读条目(阅读进度至少2页), 倒序开始下载全部, 选择已下载条目.
+* 在画廊列表界面内, 每个条目上增加一个按钮, 点击可以直接添加到下载, 而无需打开详情再下载. 如果条目已经在下载列表内, 或者已经阅读过, 则按钮隐藏.
+* 在下载/画廊列表界面, 显示 阅读进度/总页数, 并且使用渐变颜色指示进度, 完全没读过为红色, 读完为绿色.
+* 阅读时, 滑动阅读进度条, 不需要松手就直接显示进度条指示的页面.
+* 如果出现509或者IP ban, 停止所有下载.
+* 添加新的三方tag翻译源.
+* 允许在每张图片下载直接延迟一会儿, 以防止网速过快导致被 IP ban.
+
+original README by seven332
+
+----
 # DEPRECATED
 
 [![Telegram](https://img.shields.io/badge/chat-Telegram-blue.svg)](https://t.me/ehviewer)
