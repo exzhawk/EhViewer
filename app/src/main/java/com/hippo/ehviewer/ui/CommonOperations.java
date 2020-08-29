@@ -91,9 +91,9 @@ public final class CommonOperations {
         protected JSONObject doInBackground(Void... params) {
             String url;
             if (Settings.getBetaUpdateChannel()) {
-                url = "http://www.ehviewer.com/update_beta.json";
+                url = "https://raw.githubusercontent.com/exzhawk/EhViewer/api/update_beta.json";
             } else {
-                url = "http://www.ehviewer.com/update.json";
+                url = "https://raw.githubusercontent.com/exzhawk/EhViewer/api/update.json";
             }
 
             try {
@@ -102,9 +102,9 @@ public final class CommonOperations {
                 ExceptionUtils.throwIfFatal(e1);
 
                 if (Settings.getBetaUpdateChannel()) {
-                    url = "https://raw.githubusercontent.com/seven332/EhViewer/api/update_beta.json";
+                    url = "https://raw.githubusercontent.com/exzhawk/EhViewer/api/update_beta.json";
                 } else {
-                    url = "https://raw.githubusercontent.com/seven332/EhViewer/api/update.json";
+                    url = "https://raw.githubusercontent.com/exzhawk/EhViewer/api/update.json";
                 }
 
                 try {

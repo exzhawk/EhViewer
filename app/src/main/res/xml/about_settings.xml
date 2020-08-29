@@ -36,7 +36,7 @@
     <com.hippo.preference.UrlPreference
         android:key="latest_release"
         android:title="@string/settings_about_latest_release"
-        app:url="https://github.com/seven332/EhViewer/releases/latest"/>
+        app:url="https://github.com/exzhawk/EhViewer/releases/latest"/>
 
     <com.hippo.preference.UrlPreference
         android:key="website"
@@ -46,12 +46,12 @@
     <com.hippo.preference.UrlPreference
         android:key="source"
         android:title="@string/settings_about_source"
-        app:url="https://github.com/seven332/EhViewer"/>
+        app:url="https://github.com/exzhawk/EhViewer"/>
 
     <com.hippo.preference.UrlPreference
         android:key="changelog"
         android:title="@string/settings_about_changelog"
-        app:url="http://www.ehviewer.com/changelog"/>
+        app:url="https://github.com/exzhawk/EhViewer/commits/epix_mod"/>
 
     <com.hippo.preference.UrlPreference
         android:key="help"
