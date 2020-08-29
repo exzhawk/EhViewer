@@ -32,7 +32,7 @@ public class EhDaoGenerator {
     private static final String OUT_DIR = "../app/src/main/java-gen";
     private static final String DELETE_DIR = "../app/src/main/java-gen/com/hippo/ehviewer/dao";
 
-    private static final int VERSION = 4;
+    private static final int VERSION = 5;
 
     private static final String DOWNLOAD_INFO_PATH = "../app/src/main/java-gen/com/hippo/ehviewer/dao/DownloadInfo.java";
     private static final String HISTORY_INFO_PATH = "../app/src/main/java-gen/com/hippo/ehviewer/dao/HistoryInfo.java";
@@ -87,6 +87,7 @@ public class EhDaoGenerator {
         entity.addIntProperty("legacy").notNull();
         entity.addLongProperty("time").notNull();
         entity.addStringProperty("label");
+        entity.addIntProperty("total");
     }
 
     private static void addDownloadLabel(Schema schema) {
@@ -216,6 +217,7 @@ public class EhDaoGenerator {
         javaClass.getField("legacy").setPublic();
         javaClass.getField("time").setPublic();
         javaClass.getField("label").setPublic();
+        javaClass.getField("total").setPublic();
         // Add Parcelable stuff
         javaClass.addMethod("\t@Override\n" +
                 "\tpublic int describeContents() {\n" +
@@ -259,7 +261,6 @@ public class EhDaoGenerator {
         javaClass.addField("public long remaining");
         javaClass.addField("public int finished");
         javaClass.addField("public int downloaded");
-        javaClass.addField("public int total");
         // Add from GalleryInfo constructor
         javaClass.addMethod("\tpublic DownloadInfo(GalleryInfo galleryInfo) {\n" +
                 "\t\tthis.gid = galleryInfo.gid;\n" +
@@ -273,6 +274,7 @@ public class EhDaoGenerator {
                 "\t\tthis.rating = galleryInfo.rating;\n" +
                 "\t\tthis.simpleTags = galleryInfo.simpleTags;\n" +
                 "\t\tthis.simpleLanguage = galleryInfo.simpleLanguage;\n" +
+                "\t\tthis.total = galleryInfo.pages;\n" +
                 "\t}").setConstructor(true);
         javaClass.addImport("com.hippo.ehviewer.client.data.GalleryInfo");
 

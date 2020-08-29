@@ -1294,7 +1294,8 @@ public class DownloadsScene extends ToolbarScene
             DownloadInfo info = mList.get(position);
             SpiderInfo spiderInfo = readSpiderInfoFromLocalByInfo(info);
             if (spiderInfo == null) {
-                holder.readProgress.setText("");
+                holder.readProgress.setText(1 + "/" + info.total);
+                holder.readProgress.setTextColor(Color.rgb(255, 0, 0));
             } else {
                 holder.readProgress.setText((spiderInfo.startPage + 1) + "/" + spiderInfo.pages);
                 int read255th = spiderInfo.startPage * 255 / spiderInfo.pages;

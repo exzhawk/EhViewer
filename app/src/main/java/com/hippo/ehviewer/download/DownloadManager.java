@@ -215,7 +215,6 @@ public class DownloadManager implements SpiderQueen.OnSpiderListener {
             info.state = DownloadInfo.STATE_DOWNLOAD;
             info.speed = -1;
             info.remaining = -1;
-            info.total = -1;
             info.finished = 0;
             info.downloaded = 0;
             info.legacy = -1;

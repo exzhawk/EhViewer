@@ -120,6 +120,30 @@ public class EhDB {
                     "SELECT _id, NAME, MODE, CATEGORY, KEYWORD, ADVANCE_SEARCH, MIN_RATING, -1, -1, TIME FROM QUICK_SEARCH;");
                 db.execSQL("DROP TABLE QUICK_SEARCH");
                 db.execSQL("ALTER TABLE QUICK_SEARCH2 RENAME TO QUICK_SEARCH");
+            case 4: //4 to 5, add TOTAL column to DOWNLOADS
+                db.execSQL("CREATE TABLE " + "\"DOWNLOADS2\" (" + //
+                        "\"GID\" INTEGER PRIMARY KEY NOT NULL ," + // 0: gid
+                        "\"TOKEN\" TEXT," + // 1: token
+                        "\"TITLE\" TEXT," + // 2: title
+                        "\"TITLE_JPN\" TEXT," + // 3: titleJpn
+                        "\"THUMB\" TEXT," + // 4: thumb
+                        "\"CATEGORY\" INTEGER NOT NULL ," + // 5: category
+                        "\"POSTED\" TEXT," + // 6: posted
+                        "\"UPLOADER\" TEXT," + // 7: uploader
+                        "\"RATING\" REAL NOT NULL ," + // 8: rating
+                        "\"SIMPLE_LANGUAGE\" TEXT," + // 9: simpleLanguage
+                        "\"STATE\" INTEGER NOT NULL ," + // 10: state
+                        "\"LEGACY\" INTEGER NOT NULL ," + // 11: legacy
+                        "\"TIME\" INTEGER NOT NULL ," + // 12: time
+                        "\"LABEL\" TEXT," + // 13: label
+                        "\"TOTAL\" INTEGER);"); // 14: total
+                db.execSQL("INSERT INTO \"DOWNLOADS2\" (" +
+                        "GID, TOKEN, TITLE, TITLE_JPN, THUMB, CATEGORY, POSTED, UPLOADER," +
+                        " RATING, SIMPLE_LANGUAGE, STATE, LEGACY, TIME, LABEL, TOTAL)" +
+                        "SELECT GID, TOKEN, TITLE, TITLE_JPN, THUMB, CATEGORY, POSTED, UPLOADER," +
+                        " RATING, SIMPLE_LANGUAGE, STATE, LEGACY, TIME, LABEL, -1 FROM DOWNLOADS;");
+                db.execSQL("DROP TABLE DOWNLOADS");
+                db.execSQL("ALTER TABLE DOWNLOADS2 RENAME TO DOWNLOADS");
         }
     }
 
