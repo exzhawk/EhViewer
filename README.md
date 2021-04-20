@@ -15,6 +15,7 @@ Modifications:
 * Stop all downloads when encountering 509 or IP ban.
 * Allow delay between picture downloads to slow down to prevent IP ban.
 * Fix torrent download. ref: https://t.me/ehviewer/1090404
+* Built-in hosts is discontinued
 
 修改内容:
 
@@ -26,6 +27,7 @@ Modifications:
 * 添加新的三方tag翻译源.
 * 允许在每张图片下载直接延迟一会儿, 以防止网速过快导致被 IP ban.
 * 修正无法识别 torrent 的问题. ref: https://t.me/ehviewer/1090404
+* 内置 Hosts 不会维护, 默认不会启用.
 
 original README by seven332
 
