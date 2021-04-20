@@ -45,6 +45,7 @@ import com.hippo.ehviewer.client.parser.GalleryDetailParser;
 import com.hippo.ehviewer.client.parser.GalleryPageApiParser;
 import com.hippo.ehviewer.client.parser.GalleryPageParser;
 import com.hippo.ehviewer.client.parser.GalleryPageUrlParser;
+import com.hippo.ehviewer.dao.DownloadInfo;
 import com.hippo.ehviewer.gallery.GalleryProvider2;
 import com.hippo.glgallery.GalleryPageView;
 import com.hippo.glgallery.GalleryProvider;
@@ -261,6 +262,10 @@ public final class SpiderQueen implements Runnable {
 
     private void notifyFinish() {
         int size = -1;
+        try {
+            size = ((DownloadInfo) mGalleryInfo).total;
+        } catch (Exception ignored) {
+        }
         int[] temp = mPageStateArray;
         if (temp != null) {
             size = temp.length;
