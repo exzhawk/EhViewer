@@ -56,11 +56,11 @@ public class Settings {
 
     private static void fixDefaultValue(Context context) {
         // Enable builtin hosts if the country is CN
-        if (!sSettingsPre.contains(KEY_BUILT_IN_HOSTS)) {
-            if ("CN".equals(Locale.getDefault().getCountry())) {
-                putBuiltInHosts(true);
-            }
-        }
+//        if (!sSettingsPre.contains(KEY_BUILT_IN_HOSTS)) {
+//            if ("CN".equals(Locale.getDefault().getCountry())) {
+//                putBuiltInHosts(true);
+//            }
+//        }
     }
 
     private static EhConfig loadEhConfig() {
