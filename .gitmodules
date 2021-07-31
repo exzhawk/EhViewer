@@ -1,0 +1,3 @@
+[submodule "GLGallery"]
+	path = GLGallery
+	url = https://github.com/exzhawk/GLGallery.git
