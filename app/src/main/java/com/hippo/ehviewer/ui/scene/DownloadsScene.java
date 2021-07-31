@@ -118,7 +118,7 @@ public class DownloadsScene extends ToolbarScene
     public static final String KEY_GID = "gid";
 
     public static final String KEY_ACTION = "action";
-    private static final String KEY_LABEL = "label";
+    public static final String KEY_LABEL = "label";
 
     public static final String ACTION_CLEAR_DOWNLOAD_SERVICE = "clear_download_service";
     private static final int REQUEST_GALLERY_CLOSE = 0;
@@ -721,7 +721,8 @@ public class DownloadsScene extends ToolbarScene
 
             Intent intent = new Intent(activity, GalleryActivity.class);
             intent.setAction(GalleryActivity.ACTION_EH);
-            intent.putExtra(GalleryActivity.KEY_GALLERY_INFO, list.get(position));
+            intent.putExtra(GalleryActivity.KEY_GALLERY_POSITION, position);
+            intent.putExtra(KEY_LABEL, mLabel);
             lastPosition = position;
             startActivityForResult(intent, REQUEST_GALLERY_CLOSE);
             return true;

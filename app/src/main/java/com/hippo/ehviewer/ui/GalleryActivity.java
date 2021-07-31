@@ -51,13 +51,17 @@ import androidx.appcompat.widget.SwitchCompat;
 import com.hippo.android.resource.AttrResources;
 import com.hippo.ehviewer.AppConfig;
 import com.hippo.ehviewer.BuildConfig;
+import com.hippo.ehviewer.EhApplication;
 import com.hippo.ehviewer.R;
 import com.hippo.ehviewer.Settings;
 import com.hippo.ehviewer.client.data.GalleryInfo;
+import com.hippo.ehviewer.dao.DownloadInfo;
+import com.hippo.ehviewer.download.DownloadManager;
 import com.hippo.ehviewer.gallery.ArchiveGalleryProvider;
 import com.hippo.ehviewer.gallery.DirGalleryProvider;
 import com.hippo.ehviewer.gallery.EhGalleryProvider;
 import com.hippo.ehviewer.gallery.GalleryProvider2;
+import com.hippo.ehviewer.ui.scene.DownloadsScene;
 import com.hippo.ehviewer.widget.GalleryGuideView;
 import com.hippo.ehviewer.widget.GalleryHeader;
 import com.hippo.ehviewer.widget.ReversibleSeekBar;
@@ -83,6 +87,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
 
 public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChangeListener,
         GalleryView.Listener {
@@ -94,6 +99,7 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
     public static final String KEY_FILENAME = "filename";
     public static final String KEY_URI = "uri";
     public static final String KEY_GALLERY_INFO = "gallery_info";
+    public static final String KEY_GALLERY_POSITION = "gallery_position";
     public static final String KEY_PAGE = "page";
     public static final String KEY_CURRENT_INDEX = "current_index";
 
@@ -108,6 +114,12 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
     private GalleryInfo mGalleryInfo;
     private int mPage;
     private String mCacheFileName;
+
+    @Nullable
+    private DownloadManager mDownloadManager;
+    private int mDownloadPosition;
+    @Nullable
+    private List<DownloadInfo> mList;
 
     @Nullable
     private GLRootView mGLRootView;
@@ -226,6 +238,19 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
         mFilename = intent.getStringExtra(KEY_FILENAME);
         mUri = intent.getData();
         mGalleryInfo = intent.getParcelableExtra(KEY_GALLERY_INFO);
+        if (mGalleryInfo==null && mDownloadManager!=null){
+            String downloadLabel = intent.getStringExtra(DownloadsScene.KEY_LABEL);
+            if (downloadLabel == null) {
+                mList = mDownloadManager.getDefaultDownloadInfoList();
+            } else {
+                mList = mDownloadManager.getLabelDownloadInfoList(downloadLabel);
+                if (mList == null) {
+                    mList = mDownloadManager.getDefaultDownloadInfoList();
+                }
+            }
+            mDownloadPosition = intent.getIntExtra(KEY_GALLERY_POSITION, 0);
+            mGalleryInfo = mList.get(mDownloadPosition);
+        }
         mPage = intent.getIntExtra(KEY_PAGE, -1);
         buildProvider();
     }
@@ -265,6 +290,8 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
         }
 
         super.onCreate(savedInstanceState);
+
+        mDownloadManager = EhApplication.getDownloadManager();
 
         if (savedInstanceState == null) {
             onInit();
