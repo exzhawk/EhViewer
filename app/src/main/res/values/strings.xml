@@ -543,6 +543,10 @@
     <string name="settings_read_start_position_bottom_left">Bottom left</string>
     <string name="settings_read_start_position_bottom_right">Bottom right</string>
     <string name="settings_read_start_position_center">Center</string>
+    <string name="settings_auto_open_next_gallery">(In Download)Auto open next gallery</string>
+    <string name="settings_reverse_next_gallery">Reverse next/prev gallery</string>
+    <string name="settings_assign_next_page_tap_to_next_gallery">Tap next page area to next gallery</string>
+    <string name="settings_assign_slider_tap_to_next_gallery">Tap slider area to next gallery</string>
     <string name="settings_read_keep_screen_on">Keep screen on</string>
     <string name="settings_read_show_clock">Show clock</string>
     <string name="settings_read_show_progress">Show progress</string>

@@ -123,6 +123,34 @@
         </LinearLayout>
 
         <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/auto_open_next_gallery"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_auto_open_next_gallery"
+            android:textColor="?android:attr/textColorPrimary"/>
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/reverse_next_gallery"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_reverse_next_gallery"
+            android:textColor="?android:attr/textColorPrimary"/>
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/assign_next_page_tap_to_next_gallery"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_assign_next_page_tap_to_next_gallery"
+            android:textColor="?android:attr/textColorPrimary"/>
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/assign_slider_tap_to_next_gallery"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_assign_slider_tap_to_next_gallery"
+            android:textColor="?android:attr/textColorPrimary"/>
+
+        <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/keep_screen_on"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

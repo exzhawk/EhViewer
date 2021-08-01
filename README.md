@@ -1,5 +1,10 @@
 # EhViewer Mod version by Epix
 
+Download/下载地址
+
+https://github.com/exzhawk/EhViewer/releases
+
+
 WARN: The apk file signature is NOT same as official version(by seven332). You may have to uninstall official version to install this one. Export your data in official version, uninstall and install this one, import your data in this version. You can use Titanium Backup or other common method to keep data.
 
 注意, 下载的 APK 签名与原版不同, 可能需要先卸载官方版. 可以通过 app 内置的导出功能: 官方版内导出数据, 卸载官方版, 安装 mod 版, mod 版内导入数据. 也可以直接使用钛备份等一般方法保留数据.
@@ -15,19 +20,21 @@ Modifications:
 * Stop all downloads when encountering 509 or IP ban.
 * Allow delay between picture downloads to slow down to prevent IP ban.
 * Fix torrent download. ref: https://t.me/ehviewer/1090404
-* Built-in hosts is discontinued
+* Built-in hosts is discontinued.
+* Auto open next gallery after last page. Currently only work in Download.
 
 修改内容:
 
-* 在下载界面内, 右上角菜单增加若干按钮, 分别是: 全选, 进入选择模式, 选择已选择条目及以下所有条目, 选择已读条目(阅读进度至少2页), 倒序开始下载全部, 选择已下载条目.
+* 在下载界面内, 右上角菜单增加若干按钮, 分别是: 全选, 进入选择模式, 选择已选择条目及以下所有条目, 选择已读条目 (阅读进度至少 2 页), 倒序开始下载全部, 选择已下载条目.
 * 在画廊列表界面内, 每个条目上增加一个按钮, 点击可以直接添加到下载, 而无需打开详情再下载. 如果条目已经在下载列表内, 或者已经阅读过, 则按钮隐藏.
 * 在下载/画廊列表界面, 显示 阅读进度/总页数, 并且使用渐变颜色指示进度, 完全没读过为红色, 读完为绿色.
 * 阅读时, 滑动阅读进度条, 不需要松手就直接显示进度条指示的页面.
-* 如果出现509或者IP ban, 停止所有下载.
-* 添加新的三方tag翻译源.
+* 如果出现 509 或者 IP ban, 停止所有下载.
+* 添加新的三方 tag 翻译源.
 * 允许在每张图片下载直接延迟一会儿, 以防止网速过快导致被 IP ban.
 * 修正无法识别 torrent 的问题. ref: https://t.me/ehviewer/1090404
 * 内置 Hosts 不会维护, 默认不会启用.
+* 于最后一页之后自动打开下一画廊. 目前只在下载内可用.
 
 original README by seven332
 

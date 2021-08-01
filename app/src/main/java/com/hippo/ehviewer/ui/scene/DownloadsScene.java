@@ -735,6 +735,21 @@ public class DownloadsScene extends ToolbarScene
             if (mAdapter != null) {
                 mAdapter.notifyItemChanged(lastPosition);
             }
+            if (data == null) {
+                return;
+            }
+            int requestNextPosition = data.getIntExtra(GalleryActivity.KEY_REQUEST_NEXT_POSITION, -1);
+            if (requestNextPosition >= 0 && requestNextPosition < mList.size()) {
+                Intent intent = new Intent(getActivity2(), GalleryActivity.class);
+                intent.setAction(GalleryActivity.ACTION_EH);
+                intent.putExtra(GalleryActivity.KEY_GALLERY_POSITION, requestNextPosition);
+                intent.putExtra(KEY_LABEL, mLabel);
+                lastPosition = requestNextPosition;
+                if (mRecyclerView != null) {
+                    mRecyclerView.scrollToPosition(requestNextPosition);
+                }
+                startActivityForResult(intent, REQUEST_GALLERY_CLOSE);
+            }
         }
     }
 
