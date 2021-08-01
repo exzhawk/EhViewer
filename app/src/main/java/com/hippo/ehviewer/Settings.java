@@ -471,6 +471,50 @@ public class Settings {
         putIntToStr(KEY_START_POSITION, value);
     }
 
+    private static final String KEY_AUTO_OPEN_NEXT_GALLERY = "auto_open_next_gallery";
+    private static final boolean DEFAULT_KEY_AUTO_OPEN_NEXT_GALLERY = true;
+
+    public static boolean getAutoOpenNextGallery() {
+        return getBoolean(KEY_AUTO_OPEN_NEXT_GALLERY, DEFAULT_KEY_AUTO_OPEN_NEXT_GALLERY);
+    }
+
+    public static void putAutoOpenNextGallery(boolean value) {
+        putBoolean(KEY_AUTO_OPEN_NEXT_GALLERY, value);
+    }
+
+    private static final String KEY_REVERSE_NEXT_GALLERY = "reverse_next_gallery";
+    private static final boolean DEFAULT_KEY_REVERSE_NEXT_GALLERY = false;
+
+    public static boolean getReverseNextGallery() {
+        return getBoolean(KEY_REVERSE_NEXT_GALLERY, DEFAULT_KEY_REVERSE_NEXT_GALLERY);
+    }
+
+    public static void putReverseNextGallery(boolean value) {
+        putBoolean(KEY_REVERSE_NEXT_GALLERY, value);
+    }
+
+    private static final String KEY_ASSIGN_NEXT_PAGE_TAP_TO_NEXT_GALLERY = "assign_next_page_tap_to_next_gallery";
+    private static final boolean DEFAULT_KEY_ASSIGN_NEXT_PAGE_TAP_TO_NEXT_GALLERY = false;
+
+    public static boolean getAssignNextPageTapToNextGallery() {
+        return getBoolean(KEY_ASSIGN_NEXT_PAGE_TAP_TO_NEXT_GALLERY, DEFAULT_KEY_ASSIGN_NEXT_PAGE_TAP_TO_NEXT_GALLERY);
+    }
+
+    public static void putAssignNextPageTapToNextGallery(boolean value) {
+        putBoolean(KEY_ASSIGN_NEXT_PAGE_TAP_TO_NEXT_GALLERY, value);
+    }
+
+    private static final String KEY_ASSIGN_SLIDER_TAP_TO_NEXT_GALLERY = "assign_slider_tap_to_next_gallery";
+    private static final boolean DEFAULT_KEY_ASSIGN_SLIDER_TAP_TO_NEXT_GALLERY = false;
+
+    public static boolean getAssignSliderTapToNextGallery() {
+        return getBoolean(KEY_ASSIGN_SLIDER_TAP_TO_NEXT_GALLERY, DEFAULT_KEY_ASSIGN_SLIDER_TAP_TO_NEXT_GALLERY);
+    }
+
+    public static void putAssignSliderTapToNextGallery(boolean value) {
+        putBoolean(KEY_ASSIGN_SLIDER_TAP_TO_NEXT_GALLERY, value);
+    }
+
     private static final String KEY_KEEP_SCREEN_ON = "keep_screen_on";
     private static final boolean DEFAULT_KEEP_SCREEN_ON = false;
 

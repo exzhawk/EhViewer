@@ -102,6 +102,7 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
     public static final String KEY_GALLERY_POSITION = "gallery_position";
     public static final String KEY_PAGE = "page";
     public static final String KEY_CURRENT_INDEX = "current_index";
+    public static final String KEY_REQUEST_NEXT_POSITION = "request_next_position";
 
     private static final long SLIDER_ANIMATION_DURING = 150;
     private static final long HIDE_SLIDER_DELAY = 3000;
@@ -156,6 +157,11 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
     private int mLayoutMode;
     private int mSize;
     private int mCurrentIndex;
+
+    private boolean mAutoOpenNextGallery;
+    private boolean mReverseNextGallery;
+    private boolean mAssignNextPageTapToNextGallery;
+    private boolean mAssignSliderTapToNextGallery;
 
     private final ConcurrentPool<NotifyTask> mNotifyTaskPool = new ConcurrentPool<>(3);
 
@@ -376,6 +382,11 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
         mCurrentIndex = startPage;
         mLayoutMode = mGalleryView.getLayoutMode();
         updateSlider();
+
+        mAutoOpenNextGallery = Settings.getAutoOpenNextGallery();
+        mReverseNextGallery = Settings.getReverseNextGallery();
+        mAssignNextPageTapToNextGallery = Settings.getAssignNextPageTapToNextGallery();
+        mAssignSliderTapToNextGallery = Settings.getAssignSliderTapToNextGallery();
 
         // Update keep screen on
         if (Settings.getKeepScreenOn()) {
@@ -696,6 +707,31 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
         SimpleHandler.getInstance().post(task);
     }
 
+    @Override
+    public void onOverScroll(int next){
+        if (mAutoOpenNextGallery) {
+            NotifyTask task = mNotifyTaskPool.pop();
+            if (task == null) {
+                task = new NotifyTask();
+            }
+            task.setData(NotifyTask.KEY_OVERSCROLL, next);
+            SimpleHandler.getInstance().post(task);
+        }
+    }
+
+    @Override
+    public boolean onTapPageArea(int next){
+        if (mAssignNextPageTapToNextGallery){
+            NotifyTask task = mNotifyTaskPool.pop();
+            if (task == null) {
+                task = new NotifyTask();
+            }
+            task.setData(NotifyTask.KEY_OVERSCROLL, next);
+            SimpleHandler.getInstance().post(task);
+        }
+        return !mAssignNextPageTapToNextGallery;
+    }
+
     private void showSlider(View sliderPanel) {
         if (null != mSeekBarPanelAnimator) {
             mSeekBarPanelAnimator.cancel();
@@ -772,6 +808,10 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
         private final Spinner mReadingDirection;
         private final Spinner mScaleMode;
         private final Spinner mStartPosition;
+        private final SwitchCompat mAutoOpenNextGallery;
+        private final SwitchCompat mReverseNextGallery;
+        private final SwitchCompat mAssignNextPageTapToNextGallery;
+        private final SwitchCompat mAssignSliderTapToNextGallery;
         private final SwitchCompat mKeepScreenOn;
         private final SwitchCompat mShowClock;
         private final SwitchCompat mShowProgress;
@@ -789,6 +829,10 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
             mReadingDirection = (Spinner) mView.findViewById(R.id.reading_direction);
             mScaleMode = (Spinner) mView.findViewById(R.id.page_scaling);
             mStartPosition = (Spinner) mView.findViewById(R.id.start_position);
+            mAutoOpenNextGallery = (SwitchCompat) mView.findViewById(R.id.auto_open_next_gallery);
+            mReverseNextGallery = (SwitchCompat) mView.findViewById(R.id.reverse_next_gallery);
+            mAssignNextPageTapToNextGallery = (SwitchCompat) mView.findViewById(R.id.assign_next_page_tap_to_next_gallery);
+            mAssignSliderTapToNextGallery = (SwitchCompat) mView.findViewById(R.id.assign_slider_tap_to_next_gallery);
             mKeepScreenOn = (SwitchCompat) mView.findViewById(R.id.keep_screen_on);
             mShowClock = (SwitchCompat) mView.findViewById(R.id.show_clock);
             mShowProgress = (SwitchCompat) mView.findViewById(R.id.show_progress);
@@ -803,6 +847,10 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
             mReadingDirection.setSelection(Settings.getReadingDirection());
             mScaleMode.setSelection(Settings.getPageScaling());
             mStartPosition.setSelection(Settings.getStartPosition());
+            mAutoOpenNextGallery.setChecked(Settings.getAutoOpenNextGallery());
+            mReverseNextGallery.setChecked(Settings.getReverseNextGallery());
+            mAssignNextPageTapToNextGallery.setChecked(Settings.getAssignNextPageTapToNextGallery());
+            mAssignSliderTapToNextGallery.setChecked(Settings.getAssignSliderTapToNextGallery());
             mKeepScreenOn.setChecked(Settings.getKeepScreenOn());
             mShowClock.setChecked(Settings.getShowClock());
             mShowProgress.setChecked(Settings.getShowProgress());
@@ -836,6 +884,10 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
             int layoutMode = GalleryView.sanitizeLayoutMode(mReadingDirection.getSelectedItemPosition());
             int scaleMode = GalleryView.sanitizeScaleMode(mScaleMode.getSelectedItemPosition());
             int startPosition = GalleryView.sanitizeStartPosition(mStartPosition.getSelectedItemPosition());
+            boolean autoOpenNextGallery = mAutoOpenNextGallery.isChecked();
+            boolean reverseNextGallery = mReverseNextGallery.isChecked();
+            boolean assignNextPageTapToNextGallery = mAssignNextPageTapToNextGallery.isChecked();
+            boolean assignSliderTapToNextGallery =mAssignSliderTapToNextGallery.isChecked();
             boolean keepScreenOn = mKeepScreenOn.isChecked();
             boolean showClock = mShowClock.isChecked();
             boolean showProgress = mShowProgress.isChecked();
@@ -852,6 +904,10 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
             Settings.putReadingDirection(layoutMode);
             Settings.putPageScaling(scaleMode);
             Settings.putStartPosition(startPosition);
+            Settings.putAutoOpenNextGallery(autoOpenNextGallery);
+            Settings.putReverseNextGallery(reverseNextGallery);
+            Settings.putAssignNextPageTapToNextGallery(assignNextPageTapToNextGallery);
+            Settings.putAssignSliderTapToNextGallery(assignSliderTapToNextGallery);
             Settings.putKeepScreenOn(keepScreenOn);
             Settings.putShowClock(showClock);
             Settings.putShowProgress(showProgress);
@@ -882,6 +938,10 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
             mGalleryView.setLayoutMode(layoutMode);
             mGalleryView.setScaleMode(scaleMode);
             mGalleryView.setStartPosition(startPosition);
+            GalleryActivity.this.mAutoOpenNextGallery = autoOpenNextGallery;
+            GalleryActivity.this.mReverseNextGallery = reverseNextGallery;
+            GalleryActivity.this.mAssignNextPageTapToNextGallery = assignNextPageTapToNextGallery;
+            GalleryActivity.this.mAssignSliderTapToNextGallery = assignSliderTapToNextGallery;
             if (keepScreenOn) {
                 getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             } else {
@@ -1097,6 +1157,7 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
         public static final int KEY_TAP_MENU_AREA = 4;
         public static final int KEY_TAP_ERROR_TEXT = 5;
         public static final int KEY_LONG_PRESS_PAGE = 6;
+        public static final int KEY_OVERSCROLL = 7;
 
         private int mKey;
         private int mValue;
@@ -1107,25 +1168,35 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
         }
 
         private void onTapMenuArea() {
-            AlertDialog.Builder builder = new AlertDialog.Builder(GalleryActivity.this);
-            GalleryMenuHelper helper = new GalleryMenuHelper(builder.getContext());
-            builder.setTitle(R.string.gallery_menu_title)
-                    .setView(helper.getView())
-                    .setPositiveButton(android.R.string.ok, helper).show();
+            if (mAssignSliderTapToNextGallery) {
+                this.onOverScroll(-1);
+            } else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(GalleryActivity.this);
+                GalleryMenuHelper helper = new GalleryMenuHelper(builder.getContext());
+                builder.setTitle(R.string.gallery_menu_title)
+                        .setView(helper.getView())
+                        .setPositiveButton(android.R.string.ok, helper).show();
+            }
         }
 
         private void onTapSliderArea() {
-            if (mSeekBarPanel == null || mSize <= 0 || mCurrentIndex < 0) {
-                return;
-            }
-
-            SimpleHandler.getInstance().removeCallbacks(mHideSliderRunnable);
-
-            if (mSeekBarPanel.getVisibility() == View.VISIBLE) {
-                hideSlider(mSeekBarPanel);
+            if (mAssignSliderTapToNextGallery) {
+                if (mList != null) {
+                    this.onOverScroll(1);
+                }
             } else {
-                showSlider(mSeekBarPanel);
-                SimpleHandler.getInstance().postDelayed(mHideSliderRunnable, HIDE_SLIDER_DELAY);
+                if (mSeekBarPanel == null || mSize <= 0 || mCurrentIndex < 0) {
+                    return;
+                }
+
+                SimpleHandler.getInstance().removeCallbacks(mHideSliderRunnable);
+
+                if (mSeekBarPanel.getVisibility() == View.VISIBLE) {
+                    hideSlider(mSeekBarPanel);
+                } else {
+                    showSlider(mSeekBarPanel);
+                    SimpleHandler.getInstance().postDelayed(mHideSliderRunnable, HIDE_SLIDER_DELAY);
+                }
             }
         }
 
@@ -1137,6 +1208,18 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
 
         private void onLongPressPage(final int index) {
             showPageDialog(index);
+        }
+
+        private void onOverScroll(int next) {
+            if (mList != null) {
+                Intent intent = new Intent();
+                if (mReverseNextGallery) {
+                    next = -next;
+                }
+                intent.putExtra(KEY_REQUEST_NEXT_POSITION, mDownloadPosition + next);
+                GalleryActivity.this.setResult(0, intent);
+                GalleryActivity.this.finish();
+            }
         }
 
         @Override
@@ -1167,6 +1250,9 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
                     break;
                 case KEY_LONG_PRESS_PAGE:
                     onLongPressPage(mValue);
+                    break;
+                case KEY_OVERSCROLL:
+                    onOverScroll(mValue);
                     break;
             }
             mNotifyTaskPool.push(this);

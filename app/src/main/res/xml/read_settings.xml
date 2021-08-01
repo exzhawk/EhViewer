@@ -52,6 +52,26 @@
         android:defaultValue="1"/>
 
     <com.hippo.preference.SwitchPreference
+        android:key="auto_open_next_gallery"
+        android:title="@string/settings_auto_open_next_gallery"
+        android:defaultValue="true" />
+
+    <com.hippo.preference.SwitchPreference
+        android:key="reverse_next_gallery"
+        android:title="@string/settings_reverse_next_gallery"
+        android:defaultValue="false" />
+
+    <com.hippo.preference.SwitchPreference
+        android:key="assign_next_page_tap_to_next_gallery"
+        android:title="@string/settings_assign_next_page_tap_to_next_gallery"
+        android:defaultValue="false" />
+
+    <com.hippo.preference.SwitchPreference
+        android:key="assign_slider_tap_to_next_gallery"
+        android:title="@string/settings_assign_slider_tap_to_next_gallery"
+        android:defaultValue="false" />
+
+    <com.hippo.preference.SwitchPreference
         android:key="keep_screen_on"
         android:title="@string/settings_read_keep_screen_on"
         android:defaultValue="false" />
