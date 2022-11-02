@@ -492,7 +492,7 @@ public class ListUrlBuilder implements Cloneable, Parcelable {
                 }
                 // Page index
                 if (mPageIndex != 0) {
-                    ub.addQuery("page", mPageIndex);
+                    ub.addQuery("next", mPageIndex);
                 }
                 // Advance search
                 if (mAdvanceSearch != -1) {

@@ -45,7 +45,7 @@ public class GalleryListParser {
     private static final Pattern PATTERN_THUMB_SIZE = Pattern.compile("height:(\\d+)px;width:(\\d+)px");
     private static final Pattern PATTERN_FAVORITE_SLOT = Pattern.compile("background-color:rgba\\((\\d+),(\\d+),(\\d+),");
     private static final Pattern PATTERN_PAGES = Pattern.compile("(\\d+) page");
-    private static final Pattern PATTERN_NEXT_PAGE = Pattern.compile("page=(\\d+)");
+    private static final Pattern PATTERN_NEXT_PAGE = Pattern.compile("next=(\\d+)");
 
     private static final String[][] FAVORITE_SLOT_RGB = new String[][] {
         new String[] { "0", "0", "0"},
@@ -299,11 +299,10 @@ public class GalleryListParser {
         Document d = Jsoup.parse(body);
 
         try {
-            Element ptt = d.getElementsByClass("ptt").first();
-            Elements es = ptt.child(0).child(0).children();
-            result.pages = Integer.parseInt(es.get(es.size() - 2).text().trim());
+            Element searchnav = d.getElementsByClass("searchnav").first();
+            result.pages = Integer.MAX_VALUE;
 
-            Element e = es.get(es.size() - 1);
+            Element e = searchnav.children().get(3);
             if (e != null) {
                 e = e.children().first();
                 if (e != null) {

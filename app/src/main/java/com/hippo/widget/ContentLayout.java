@@ -275,15 +275,15 @@ public class ContentLayout extends FrameLayout {
                 if (mEndPage < mPages) {
                     // Get next page
                     // Fill pages before NextPage with empty list
-                    while (mNextPage > mEndPage && mEndPage < mPages) {
-                        mCurrentTaskId = mIdGenerator.nextId();
-                        mCurrentTaskType = TYPE_NEXT_PAGE_KEEP_POS;
-                        mCurrentTaskPage = mEndPage;
-                        onGetPageData(mCurrentTaskId, mPages, mNextPage, Collections.emptyList());
-                    }
+//                    while (mNextPage > mEndPage && mEndPage < mPages) {
+//                        mCurrentTaskId = mIdGenerator.nextId();
+//                        mCurrentTaskType = TYPE_NEXT_PAGE_KEEP_POS;
+//                        mCurrentTaskPage = mEndPage;
+//                        onGetPageData(mCurrentTaskId, mPages, mNextPage, Collections.emptyList());
+//                    }
                     mCurrentTaskId = mIdGenerator.nextId();
                     mCurrentTaskType = TYPE_NEXT_PAGE_KEEP_POS;
-                    mCurrentTaskPage = mEndPage;
+                    mCurrentTaskPage = mNextPage;
                     getPageData(mCurrentTaskId, mCurrentTaskType, mCurrentTaskPage);
                 } else if (mEndPage == mPages) {
                     // Refresh last page
