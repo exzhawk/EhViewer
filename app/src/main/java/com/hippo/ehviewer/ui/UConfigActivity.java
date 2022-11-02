@@ -20,6 +20,8 @@ package com.hippo.ehviewer.ui;
  * Created by Hippo on 2018/2/9.
  */
 
+import static com.hippo.ehviewer.EhApplication.getEhProxySelector;
+
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.os.Build;
@@ -32,6 +34,10 @@ import android.webkit.CookieSyncManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import androidx.annotation.Nullable;
+import androidx.webkit.ProxyConfig;
+import androidx.webkit.ProxyController;
+import androidx.webkit.WebViewFeature;
+
 import com.google.android.material.snackbar.Snackbar;
 import com.hippo.ehviewer.EhApplication;
 import com.hippo.ehviewer.R;
@@ -39,6 +45,13 @@ import com.hippo.ehviewer.client.EhCookieStore;
 import com.hippo.ehviewer.client.EhUrl;
 import com.hippo.ehviewer.widget.DialogWebChromeClient;
 import com.hippo.widget.ProgressView;
+
+import java.net.Proxy;
+import java.net.ProxySelector;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+
 import okhttp3.Cookie;
 import okhttp3.HttpUrl;
 
@@ -81,10 +94,46 @@ public class UConfigActivity extends ToolbarActivity {
     webView.getSettings().setJavaScriptEnabled(true);
     webView.setWebViewClient(new UConfigWebViewClient());
     webView.setWebChromeClient(new DialogWebChromeClient(this));
+    if (WebViewFeature.isFeatureSupported(WebViewFeature.PROXY_OVERRIDE)){
+      ProxySelector proxySelector=getEhProxySelector(getApplication());
+      try {
+        List<Proxy> proxyList = proxySelector.select(new URI(url));
+        if(proxyList.size()==0){
+          this.setDirect();
+        }
+        else{
+          Proxy proxy=proxyList.get(0);
+          if(proxy.type() == Proxy.Type.DIRECT){
+            this.setDirect();
+          }
+          else{
+            setProxy(proxy);
+          }
+        }
+      } catch (URISyntaxException e) {
+        e.printStackTrace();
+      }
+    }
+
     webView.loadUrl(url);
     progress = (ProgressView) findViewById(R.id.progress);
 
     Snackbar.make(webView, R.string.apply_tip, Snackbar.LENGTH_LONG).show();
+  }
+
+  private void setDirect() {
+    ProxyController.getInstance().clearProxyOverride(command -> {
+    }, () -> {
+    });
+  }
+  private void setProxy(Proxy proxy) {
+    String proxyUrl = proxy.type().name()+":/"+proxy.address();
+    ProxyConfig proxyConfig = new ProxyConfig.Builder()
+            .addProxyRule(proxyUrl)
+            .build();
+    ProxyController.getInstance().setProxyOverride(proxyConfig, command -> {
+    }, () -> {
+    });
   }
 
   private void apply() {
@@ -161,7 +210,8 @@ public class UConfigActivity extends ToolbarActivity {
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
       // Never load other urls
-      return true;
+      // allow 302 to login, etc.
+      return false;
     }
 
     @Override
