@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright 2016 Hippo Seven
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,48 +14,85 @@
   ~ limitations under the License.
   -->
 
-<menu
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:id="@+id/action_start_all"
         android:icon="@drawable/v_play_dark_x24"
         android:title="@string/download_start_all"
-        app:showAsAction="always"/>
+        app:showAsAction="always" />
 
     <item
         android:id="@+id/action_stop_all"
         android:icon="@drawable/v_pause_dark_x24"
         android:title="@string/download_stop_all"
-        app:showAsAction="ifRoom"/>
-
-    <item
-      android:id="@+id/action_reset_reading_progress"
-      android:title="@string/download_reset_reading_progress"
-      app:showAsAction="never"/>
-    <item
-        android:id="@+id/action_select_all"
-        android:title="@string/download_select_all"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/action_edit_mode"
-        android:title="@string/download_edit_mode"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/action_select_below"
-        android:title="@string/download_select_below"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/action_select_read"
-        android:title="@string/download_select_read"
-        app:showAsAction="never" />
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_start_all_reversed"
         android:title="@string/download_start_all_reversed"
         app:showAsAction="never" />
-    <item android:id="@+id/action_select_done"
-        android:title="@string/download_select_done"
+    <item
+        android:id="@+id/action_reset_reading_progress"
+        android:title="@string/download_reset_reading_progress"
         app:showAsAction="never" />
+
+<!--    <item-->
+<!--        android:id="@+id/action_selection"-->
+<!--        android:title="@string/download_selection"-->
+<!--        app:showAsAction="never">-->
+<!--        <menu>-->
+            <item
+                android:id="@+id/action_edit_mode"
+                android:title="@string/download_edit_mode"
+                app:showAsAction="never" />
+            <item
+                android:id="@+id/action_select_all"
+                android:title="@string/download_select_all"
+                app:showAsAction="never" />
+            <item
+                android:id="@+id/action_select_read"
+                android:title="@string/download_select_read"
+                app:showAsAction="never" />
+            <item
+                android:id="@+id/action_select_done"
+                android:title="@string/download_select_done"
+                app:showAsAction="never" />
+<!--        </menu>-->
+<!--    </item>-->
+        <item android:id="@+id/action_scroll_to_top"
+            android:title="@string/download_scroll_to_top"
+            app:showAsAction="never" />
+        <item android:id="@+id/action_scroll_to_bottom"
+            android:title="@string/download_scroll_to_bottom"
+            app:showAsAction="never" />
+    <!--    <item-->
+<!--        android:id="@+id/action_sort"-->
+<!--        android:title="@string/download_sort"-->
+<!--        app:showAsAction="never">-->
+<!--        <menu>-->
+            <item
+                android:id="@+id/action_shuffle"
+                android:title="@string/download_shuffle"
+                app:showAsAction="never" />
+            <item
+                android:id="@+id/action_sort_by_page"
+                android:title="@string/download_sort_by_page"
+                app:showAsAction="never" />
+            <item
+                android:id="@+id/action_sort_by_title"
+                android:title="@string/download_sort_by_title"
+                app:showAsAction="never" />
+            <item
+                android:id="@+id/action_sort_by_author"
+                android:title="@string/download_sort_by_author"
+                app:showAsAction="never" />
+            <item
+                android:id="@+id/action_sort_by_category"
+                android:title="@string/download_sort_by_category"
+                app:showAsAction="never" />
+<!--        </menu>-->
+<!--    </item>-->
+
 
 </menu>

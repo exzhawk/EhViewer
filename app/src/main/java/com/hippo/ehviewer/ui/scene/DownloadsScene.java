@@ -103,8 +103,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import static com.hippo.ehviewer.spider.SpiderQueen.SPIDER_INFO_FILENAME;
 
 public class DownloadsScene extends ToolbarScene
@@ -122,6 +127,8 @@ public class DownloadsScene extends ToolbarScene
 
     public static final String ACTION_CLEAR_DOWNLOAD_SERVICE = "clear_download_service";
     private static final int REQUEST_GALLERY_CLOSE = 0;
+
+    private static Pattern authorPattern = Pattern.compile("^(?:\\([^\\[\\]\\(\\)]*\\))?\\s*\\[([^\\[\\]\\(\\)]*)(?:\\(([^\\[\\]\\(\\)]*)\\))?\\]");
 
     private int lastPosition;
     /*---------------
@@ -471,12 +478,30 @@ public class DownloadsScene extends ToolbarScene
         return R.menu.scene_download;
     }
 
+    private static String getAuthor(DownloadInfo downloadInfo) {
+        return getAuthor(downloadInfo.title);
+    }
+
+    private static String getAuthor(String title) {
+        Matcher matcher = authorPattern.matcher(title);
+        if (!matcher.find())
+            return "";
+        if (matcher.group(2) != null) {
+            return matcher.group(2);
+        }
+        if (matcher.group(1) != null) {
+            return matcher.group(1);
+        }
+        return "";
+    }
+
+    @SuppressLint("NewApi")
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         // Skip when in choice mode
         Activity activity = getActivity2();
         int id = item.getItemId();
-        if ((null == activity || null == mRecyclerView || mRecyclerView.isInCustomChoice()) && item.getItemId() != R.id.action_select_below) {
+        if ((null == activity || null == mRecyclerView || mRecyclerView.isInCustomChoice())) {
             return false;
         }
 
@@ -514,24 +539,6 @@ public class DownloadsScene extends ToolbarScene
                 mRecyclerView.intoCustomChoiceMode();
                 return true;
             }
-            case R.id.action_select_below: {
-                EasyRecyclerView recyclerView = mRecyclerView;
-                if (recyclerView.isInCustomChoice()) {
-                    SparseBooleanArray stateArray = recyclerView.getCheckedItemPositions();
-                    int firstSelectedIndex = -1;
-                    for (int i = 0, n = stateArray.size(); i < n; i++) {
-                        if (stateArray.valueAt(i)) {
-                            firstSelectedIndex = stateArray.keyAt(i);
-                            break;
-                        }
-                    }
-                    if (firstSelectedIndex > -1 && mAdapter != null)
-                        for (int i = firstSelectedIndex, n = mAdapter.getItemCount(); i < n; i++) {
-                            recyclerView.setItemChecked(i, true);
-                        }
-                }
-                return true;
-            }
             case R.id.action_select_read: {
                 mRecyclerView.intoCustomChoiceMode();
                 for (int i = 0, n = mAdapter.getItemCount(); i < n; i++) {
@@ -567,6 +574,80 @@ public class DownloadsScene extends ToolbarScene
                 intent.setAction(DownloadService.ACTION_START_RANGE);
                 intent.putExtra(DownloadService.KEY_GID_LIST, gidList);
                 activity.startService(intent);
+                return true;
+            }
+            case R.id.action_scroll_to_top:{
+                mRecyclerView.scrollToPosition(0);
+                return true;
+            }
+            case R.id.action_scroll_to_bottom:{
+                mRecyclerView.scrollToPosition(mList.size()-1);
+                return true;
+            }
+            case R.id.action_shuffle:{
+                Collections.shuffle(mList);
+                if (mAdapter != null) {
+                    mAdapter.notifyDataSetChanged();
+                }
+                return true;
+            }
+            case R.id.action_sort_by_page:{
+                //noinspection Convert2Lambda
+                Collections.sort(mList, new Comparator<DownloadInfo>() {
+                    @Override
+                    public int compare(DownloadInfo o1, DownloadInfo o2) {
+                        return o2.total - o1.total;
+                    }
+                });
+                if (mAdapter != null) {
+                    mAdapter.notifyDataSetChanged();
+                }
+                return true;
+            }
+            case R.id.action_sort_by_title:{
+                //noinspection Convert2Lambda
+                Collections.sort(mList, new Comparator<DownloadInfo>() {
+                    @Override
+                    public int compare(DownloadInfo o1, DownloadInfo o2) {
+                        return o1.title.compareTo(o2.title);
+                    }
+                });
+                if (mAdapter != null) {
+                    mAdapter.notifyDataSetChanged();
+                }
+                return true;
+            }
+            case R.id.action_sort_by_author:{
+                //noinspection Convert2Lambda
+                Collections.sort(mList, new Comparator<DownloadInfo>() {
+                    @Override
+                    public int compare(DownloadInfo o1, DownloadInfo o2) {
+                        String a1 = getAuthor(o1);
+                        String a2 = getAuthor(o2);
+                        int aCompare = a1.compareTo(a2);
+                        if (aCompare == 0) {
+                            return o1.title.compareTo(o2.title);
+                        } else {
+                            return aCompare;
+                        }
+                    }
+                });
+                if (mAdapter != null) {
+                    mAdapter.notifyDataSetChanged();
+                }
+                return true;
+            }
+            case R.id.action_sort_by_category:{
+                //noinspection Convert2Lambda
+                Collections.sort(mList, new Comparator<DownloadInfo>() {
+                    @Override
+                    public int compare(DownloadInfo o1, DownloadInfo o2) {
+                        return o1.category - o2.category;
+                    }
+                });
+                if (mAdapter != null) {
+                    mAdapter.notifyDataSetChanged();
+                }
                 return true;
             }
         }
