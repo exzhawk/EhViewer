@@ -105,7 +105,7 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
     public static final String KEY_REQUEST_NEXT_POSITION = "request_next_position";
 
     private static final long SLIDER_ANIMATION_DURING = 150;
-    private static final long HIDE_SLIDER_DELAY = 3000;
+    private static final long HIDE_SLIDER_DELAY = 300000;
 
     private static final int WRITE_REQUEST_CODE = 43;
 
