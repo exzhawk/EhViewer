@@ -990,7 +990,7 @@ public class FavoritesScene extends BaseScene implements
             }
 
             updateSearchBar();
-            mHelper.onGetPageData(taskId, result.pages, result.nextPage, result.galleryInfoList);
+            mHelper.onGetPageData(taskId, result.pages, 0, result.prev, result.next, result.galleryInfoList);
 
             if (mDrawerAdapter != null) {
                 mDrawerAdapter.notifyDataSetChanged();
@@ -1016,9 +1016,9 @@ public class FavoritesScene extends BaseScene implements
             }
 
             if (list.size() == 0) {
-                mHelper.onGetPageData(taskId, 0, 0, Collections.EMPTY_LIST);
+                mHelper.onGetPageData(taskId, 0, 0, null, null, Collections.EMPTY_LIST);
             } else {
-                mHelper.onGetPageData(taskId, 1, 0, list);
+                mHelper.onGetPageData(taskId, 1, 0, null, null, list);
             }
 
             if (TextUtils.isEmpty(keyword)) {
@@ -1140,7 +1140,7 @@ public class FavoritesScene extends BaseScene implements
     private class FavoritesHelper extends GalleryInfoContentHelper {
 
         @Override
-        protected void getPageData(final int taskId, int type, int page) {
+        protected void getPageData(final int taskId, int type, int page, String prev, String next) {
             MainActivity activity = getActivity2();
             if (null == activity || null == mUrlBuilder || null == mClient ) {
                 return;
@@ -1184,7 +1184,7 @@ public class FavoritesScene extends BaseScene implements
                         url = mUrlBuilder.build();
                     }
 
-                    mUrlBuilder.setIndex(page);
+                    mUrlBuilder.setIndex(prev, next);
                     EhRequest request = new EhRequest();
                     request.setMethod(EhClient.METHOD_MODIFY_FAVORITES);
                     request.setCallback(new GetFavoritesListener(getContext(),
@@ -1202,7 +1202,7 @@ public class FavoritesScene extends BaseScene implements
                     }
                 });
             } else {
-                mUrlBuilder.setIndex(page);
+                mUrlBuilder.setIndex(prev, next);
                 String url = mUrlBuilder.build();
                 EhRequest request = new EhRequest();
                 request.setMethod(EhClient.METHOD_GET_FAVORITES);

@@ -45,7 +45,8 @@ public class GalleryListParser {
     private static final Pattern PATTERN_THUMB_SIZE = Pattern.compile("height:(\\d+)px;width:(\\d+)px");
     private static final Pattern PATTERN_FAVORITE_SLOT = Pattern.compile("background-color:rgba\\((\\d+),(\\d+),(\\d+),");
     private static final Pattern PATTERN_PAGES = Pattern.compile("(\\d+) page");
-    private static final Pattern PATTERN_NEXT_PAGE = Pattern.compile("page=(\\d+)");
+    private static final Pattern PATTERN_NEXT = Pattern.compile("next=([\\d-]+)");
+    private static final Pattern PATTERN_PREV = Pattern.compile("prev=([\\d-]+)");
 
     private static final String[][] FAVORITE_SLOT_RGB = new String[][] {
         new String[] { "0", "0", "0"},
@@ -62,7 +63,8 @@ public class GalleryListParser {
 
     public static class Result {
         public int pages;
-        public int nextPage;
+        public String prev;
+        public String next;
         public boolean noWatchedTags;
         public List<GalleryInfo> galleryInfoList;
     }
@@ -299,19 +301,22 @@ public class GalleryListParser {
         Document d = Jsoup.parse(body);
 
         try {
-            Element ptt = d.getElementsByClass("ptt").first();
-            Elements es = ptt.child(0).child(0).children();
-            result.pages = Integer.parseInt(es.get(es.size() - 2).text().trim());
+            Element uprev = d.getElementById("uprev");
+            Element unext = d.getElementById("unext");
+            result.pages = -1;
 
-            Element e = es.get(es.size() - 1);
-            if (e != null) {
-                e = e.children().first();
-                if (e != null) {
-                    String href = e.attr("href");
-                    Matcher matcher = PATTERN_NEXT_PAGE.matcher(href);
-                    if (matcher.find()) {
-                        result.nextPage = NumberUtils.parseIntSafely(matcher.group(1), 0);
-                    }
+            if (uprev != null) {
+                String href = uprev.attr("href");
+                Matcher matcher = PATTERN_PREV.matcher(href);
+                if (matcher.find()) {
+                    result.prev = matcher.group(1);
+                }
+            }
+            if (unext != null) {
+                String href = unext.attr("href");
+                Matcher matcher = PATTERN_NEXT.matcher(href);
+                if (matcher.find()) {
+                    result.next = matcher.group(1);
                 }
             }
         } catch (Throwable e) {

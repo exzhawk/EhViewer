@@ -56,6 +56,8 @@ public class ListUrlBuilder implements Cloneable, Parcelable {
     private int mMode = MODE_NORMAL;
 
     private int mPageIndex = 0;
+    private String mPrev;
+    private String mNext;
 
     private int mCategory = EhUtils.NONE;
     private String mKeyword = null;
@@ -76,6 +78,8 @@ public class ListUrlBuilder implements Cloneable, Parcelable {
     public void reset() {
         mMode = MODE_NORMAL;
         mPageIndex = 0;
+        mPrev = null;
+        mNext = null;
         mCategory = EhUtils.NONE;
         mKeyword = null;
         mAdvanceSearch = -1;
@@ -110,8 +114,14 @@ public class ListUrlBuilder implements Cloneable, Parcelable {
         return mPageIndex;
     }
 
-    public void setPageIndex(int pageIndex) {
-        mPageIndex = pageIndex;
+    public void setPageIndex(int pageIndex, String prev, String next) {
+        mPrev = prev;
+        mNext = next;
+        if (prev != null || next != null) {
+            mPageIndex = 0;
+        } else {
+            mPageIndex = pageIndex;
+        }
     }
 
     public int getCategory() {
@@ -202,6 +212,8 @@ public class ListUrlBuilder implements Cloneable, Parcelable {
     public void set(ListUrlBuilder lub) {
         mMode = lub.mMode;
         mPageIndex = lub.mPageIndex;
+        mPrev = lub.mPrev;
+        mNext = lub.mNext;
         mCategory = lub.mCategory;
         mKeyword = lub.mKeyword;
         mAdvanceSearch = lub.mAdvanceSearch;
@@ -494,6 +506,12 @@ public class ListUrlBuilder implements Cloneable, Parcelable {
                 if (mPageIndex != 0) {
                     ub.addQuery("page", mPageIndex);
                 }
+                if (mPrev != null) {
+                    ub.addQuery("prev", mPrev);
+                }
+                if (mNext != null) {
+                    ub.addQuery("next", mNext);
+                }
                 // Advance search
                 if (mAdvanceSearch != -1) {
                     ub.addQuery("advsearch", "1");
@@ -533,6 +551,12 @@ public class ListUrlBuilder implements Cloneable, Parcelable {
                 if (mPageIndex != 0) {
                     sb.append('/').append(mPageIndex);
                 }
+                if (mPrev != null) {
+                    sb.append("/?prev=").append(mPrev);
+                }
+                if (mNext != null) {
+                    sb.append("/?next=").append(mNext);
+                }
                 return sb.toString();
             }
             case MODE_TAG: {
@@ -545,6 +569,12 @@ public class ListUrlBuilder implements Cloneable, Parcelable {
                 }
                 if (mPageIndex != 0) {
                     sb.append('/').append(mPageIndex);
+                }
+                if (mPrev != null) {
+                    sb.append("/?prev=").append(mPrev);
+                }
+                if (mNext != null) {
+                    sb.append("/?next=").append(mNext);
                 }
                 return sb.toString();
             }
@@ -564,6 +594,8 @@ public class ListUrlBuilder implements Cloneable, Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.mMode);
         dest.writeInt(this.mPageIndex);
+        dest.writeString(this.mNext);
+        dest.writeString(this.mPrev);
         dest.writeInt(this.mCategory);
         dest.writeString(this.mKeyword);
         dest.writeInt(this.mAdvanceSearch);
@@ -583,6 +615,8 @@ public class ListUrlBuilder implements Cloneable, Parcelable {
     protected ListUrlBuilder(Parcel in) {
         this.mMode = in.readInt();
         this.mPageIndex = in.readInt();
+        this.mPrev=in.readString();
+        this.mNext=in.readString();
         this.mCategory = in.readInt();
         this.mKeyword = in.readString();
         this.mAdvanceSearch = in.readInt();

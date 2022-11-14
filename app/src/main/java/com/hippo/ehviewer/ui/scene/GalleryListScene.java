@@ -838,7 +838,7 @@ public final class GalleryListScene extends BaseScene
                 }
 
                 mUrlBuilder.set(list.get(position));
-                mUrlBuilder.setPageIndex(0);
+                mUrlBuilder.setPageIndex(0, null, null);
                 onUpdateUrlBuilder();
                 mHelper.refresh();
                 setState(STATE_NORMAL);
@@ -1496,13 +1496,13 @@ public final class GalleryListScene extends BaseScene
     private class GalleryListHelper extends GalleryInfoContentHelper {
 
         @Override
-        protected void getPageData(int taskId, int type, int page) {
+        protected void getPageData(int taskId, int type, int page, String prev, String next) {
             MainActivity activity = getActivity2();
             if (null == activity || null == mClient || null == mUrlBuilder) {
                 return;
             }
 
-            mUrlBuilder.setPageIndex(page);
+            mUrlBuilder.setPageIndex(page, prev, next);
             if (ListUrlBuilder.MODE_IMAGE_SEARCH == mUrlBuilder.getMode()) {
                 EhRequest request = new EhRequest();
                 request.setMethod(EhClient.METHOD_IMAGE_SEARCH);
@@ -1580,7 +1580,7 @@ public final class GalleryListScene extends BaseScene
                     ? R.string.gallery_list_empty_hit_subscription
                     : R.string.gallery_list_empty_hit);
             mHelper.setEmptyString(emptyString);
-            mHelper.onGetPageData(taskId, result.pages, result.nextPage, result.galleryInfoList);
+            mHelper.onGetPageData(taskId, result.pages, 0, result.prev, result.next, result.galleryInfoList);
         }
     }
 
