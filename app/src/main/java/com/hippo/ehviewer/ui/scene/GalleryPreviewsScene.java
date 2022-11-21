@@ -289,7 +289,7 @@ public class GalleryPreviewsScene extends ToolbarScene implements EasyRecyclerVi
     private class GalleryPreviewHelper extends ContentLayout.ContentHelper<GalleryPreview> {
 
         @Override
-        protected void getPageData(final int taskId, int type, int page, String prev, String next) {
+        protected void getPageData(final int taskId, int type, int page, String prev, String next, String jumpSeek) {
             MainActivity activity = getActivity2();
             if (null == activity || null == mClient || null == mGalleryInfo) {
                 onGetException(taskId, new EhException(getString(R.string.error_cannot_find_gallery)));

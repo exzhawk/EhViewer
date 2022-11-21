@@ -22,6 +22,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.hippo.ehviewer.client.EhUrl;
+import com.hippo.ehviewer.client.parser.ParserUtils;
 import com.hippo.network.UrlBuilder;
 
 import java.io.UnsupportedEncodingException;
@@ -35,12 +36,14 @@ public class FavListUrlBuilder implements Parcelable {
 
     private String mPrev;
     private String mNext;
+    private String mJumpSeek;
     private String mKeyword;
     private int mFavCat = FAV_CAT_ALL;
 
-    public void setIndex(String prev, String next) {
+    public void setIndex(String prev, String next, String jumpSeek) {
         mPrev = prev;
         mNext = next;
+        mJumpSeek = jumpSeek;
     }
 
     public void setKeyword(String keyword) {
@@ -93,6 +96,14 @@ public class FavListUrlBuilder implements Parcelable {
         if (mNext != null) {
             ub.addQuery("next", mNext);
         }
+        if (mJumpSeek != null) {
+            int parseResult = ParserUtils.parseJumpSeek(mJumpSeek);
+            if (parseResult == ParserUtils.IS_JUMP) {
+                ub.addQuery("jump", mJumpSeek);
+            } else {
+                ub.addQuery("seek", mJumpSeek);
+            }
+        }
         return ub.build();
     }
 
@@ -105,6 +116,7 @@ public class FavListUrlBuilder implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.mPrev);
         dest.writeString(this.mNext);
+        dest.writeString(this.mJumpSeek);
         dest.writeString(this.mKeyword);
         dest.writeInt(this.mFavCat);
     }
@@ -115,6 +127,7 @@ public class FavListUrlBuilder implements Parcelable {
     protected FavListUrlBuilder(Parcel in) {
         this.mPrev = in.readString();
         this.mNext = in.readString();
+        this.mJumpSeek = in.readString();
         this.mKeyword = in.readString();
         this.mFavCat = in.readInt();
     }

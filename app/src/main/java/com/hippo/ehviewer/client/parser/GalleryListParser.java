@@ -301,23 +301,19 @@ public class GalleryListParser {
         Document d = Jsoup.parse(body);
 
         try {
-            Element uprev = d.getElementById("uprev");
-            Element unext = d.getElementById("unext");
+            Element prevEle = d.getElementById("uprev");
+            Element nextEle = d.getElementById("unext");
             result.pages = -1;
 
-            if (uprev != null) {
-                String href = uprev.attr("href");
-                Matcher matcher = PATTERN_PREV.matcher(href);
-                if (matcher.find()) {
-                    result.prev = matcher.group(1);
-                }
+            String prevHref = prevEle.attr("href");
+            Matcher prevMatcher = PATTERN_PREV.matcher(prevHref);
+            if (prevMatcher.find()) {
+                result.prev = prevMatcher.group(1);
             }
-            if (unext != null) {
-                String href = unext.attr("href");
-                Matcher matcher = PATTERN_NEXT.matcher(href);
-                if (matcher.find()) {
-                    result.next = matcher.group(1);
-                }
+            String nextHref = nextEle.attr("href");
+            Matcher nextMatcher = PATTERN_NEXT.matcher(nextHref);
+            if (nextMatcher.find()) {
+                result.next = nextMatcher.group(1);
             }
         } catch (Throwable e) {
             ExceptionUtils.throwIfFatal(e);

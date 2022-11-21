@@ -24,6 +24,7 @@ import androidx.annotation.Nullable;
 import com.hippo.ehviewer.client.EhConfig;
 import com.hippo.ehviewer.client.EhUrl;
 import com.hippo.ehviewer.client.EhUtils;
+import com.hippo.ehviewer.client.parser.ParserUtils;
 import com.hippo.ehviewer.dao.QuickSearch;
 import com.hippo.ehviewer.widget.AdvanceSearchTable;
 import com.hippo.network.UrlBuilder;
@@ -58,6 +59,7 @@ public class ListUrlBuilder implements Cloneable, Parcelable {
     private int mPageIndex = 0;
     private String mPrev;
     private String mNext;
+    private String mJumpSeek;
 
     private int mCategory = EhUtils.NONE;
     private String mKeyword = null;
@@ -80,6 +82,7 @@ public class ListUrlBuilder implements Cloneable, Parcelable {
         mPageIndex = 0;
         mPrev = null;
         mNext = null;
+        mJumpSeek = null;
         mCategory = EhUtils.NONE;
         mKeyword = null;
         mAdvanceSearch = -1;
@@ -114,7 +117,7 @@ public class ListUrlBuilder implements Cloneable, Parcelable {
         return mPageIndex;
     }
 
-    public void setPageIndex(int pageIndex, String prev, String next) {
+    public void setPageIndex(int pageIndex, String prev, String next, String jumpSeek) {
         mPrev = prev;
         mNext = next;
         if (prev != null || next != null) {
@@ -122,6 +125,7 @@ public class ListUrlBuilder implements Cloneable, Parcelable {
         } else {
             mPageIndex = pageIndex;
         }
+        mJumpSeek = jumpSeek;
     }
 
     public int getCategory() {
@@ -214,6 +218,7 @@ public class ListUrlBuilder implements Cloneable, Parcelable {
         mPageIndex = lub.mPageIndex;
         mPrev = lub.mPrev;
         mNext = lub.mNext;
+        mJumpSeek = lub.mJumpSeek;
         mCategory = lub.mCategory;
         mKeyword = lub.mKeyword;
         mAdvanceSearch = lub.mAdvanceSearch;
@@ -512,6 +517,14 @@ public class ListUrlBuilder implements Cloneable, Parcelable {
                 if (mNext != null) {
                     ub.addQuery("next", mNext);
                 }
+                if (mJumpSeek != null) {
+                    int parseResult = ParserUtils.parseJumpSeek(mJumpSeek);
+                    if (parseResult == ParserUtils.IS_JUMP) {
+                        ub.addQuery("jump", mJumpSeek);
+                    } else {
+                        ub.addQuery("seek", mJumpSeek);
+                    }
+                }
                 // Advance search
                 if (mAdvanceSearch != -1) {
                     ub.addQuery("advsearch", "1");
@@ -557,6 +570,14 @@ public class ListUrlBuilder implements Cloneable, Parcelable {
                 if (mNext != null) {
                     sb.append("/?next=").append(mNext);
                 }
+                if (mJumpSeek != null) {
+                    int parseResult = ParserUtils.parseJumpSeek(mJumpSeek);
+                    if (parseResult == ParserUtils.IS_JUMP) {
+                        sb.append("&jump=").append(mJumpSeek);
+                    } else {
+                        sb.append("&seek=").append(mJumpSeek);
+                    }
+                }
                 return sb.toString();
             }
             case MODE_TAG: {
@@ -575,6 +596,14 @@ public class ListUrlBuilder implements Cloneable, Parcelable {
                 }
                 if (mNext != null) {
                     sb.append("/?next=").append(mNext);
+                }
+                if (mJumpSeek != null) {
+                    int parseResult = ParserUtils.parseJumpSeek(mJumpSeek);
+                    if (parseResult == ParserUtils.IS_JUMP) {
+                        sb.append("&jump=").append(mJumpSeek);
+                    } else {
+                        sb.append("&seek=").append(mJumpSeek);
+                    }
                 }
                 return sb.toString();
             }
@@ -596,6 +625,7 @@ public class ListUrlBuilder implements Cloneable, Parcelable {
         dest.writeInt(this.mPageIndex);
         dest.writeString(this.mNext);
         dest.writeString(this.mPrev);
+        dest.writeString(this.mJumpSeek);
         dest.writeInt(this.mCategory);
         dest.writeString(this.mKeyword);
         dest.writeInt(this.mAdvanceSearch);

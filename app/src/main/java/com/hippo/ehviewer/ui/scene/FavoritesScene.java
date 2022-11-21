@@ -68,6 +68,7 @@ import com.hippo.ehviewer.client.EhUrl;
 import com.hippo.ehviewer.client.data.FavListUrlBuilder;
 import com.hippo.ehviewer.client.data.GalleryInfo;
 import com.hippo.ehviewer.client.parser.FavoritesParser;
+import com.hippo.ehviewer.client.parser.ParserUtils;
 import com.hippo.ehviewer.ui.CommonOperations;
 import com.hippo.ehviewer.ui.MainActivity;
 import com.hippo.ehviewer.ui.annotation.DrawerLifeCircle;
@@ -777,12 +778,30 @@ public class FavoritesScene extends BaseScene implements
 
         final int page = mHelper.getPageForTop();
         final int pages = mHelper.getPages();
-        String hint = getString(R.string.go_to_hint, page + 1, pages);
+        String hint = getString(R.string.jump_seek_hint);
         final EditTextDialogBuilder builder = new EditTextDialogBuilder(context, null, hint);
-        builder.getEditText().setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-        final AlertDialog dialog = builder.setTitle(R.string.go_to)
-            .setPositiveButton(android.R.string.ok, null)
+        builder.getEditText().setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+        final AlertDialog dialog = builder.setTitle(R.string.go_to).setMessage(R.string.jump_seek_message)
+            .setNegativeButton(R.string.prev_jump_seek, null)
+            .setPositiveButton(R.string.next_jump_seek, null)
             .show();
+        dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setOnClickListener(v -> {
+            if (null == mHelper) {
+                dialog.dismiss();
+                return;
+            }
+
+            String text = builder.getText().trim();
+            int parseResult = ParserUtils.parseJumpSeek(text);
+            if (parseResult == ParserUtils.IS_INVALID) {
+                builder.setError(getString(R.string.invalid_jump_seek));
+                return;
+            }
+            builder.setError(null);
+            mHelper.jumpSeek(text, FavoritesHelper.JUMP_SEEK_PREV);
+            AppHelper.hideSoftInput(dialog);
+            dialog.dismiss();
+        });
         dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(v -> {
             if (null == mHelper) {
                 dialog.dismiss();
@@ -790,19 +809,13 @@ public class FavoritesScene extends BaseScene implements
             }
 
             String text = builder.getText().trim();
-            int goTo;
-            try {
-                goTo = Integer.parseInt(text) - 1;
-            } catch (NumberFormatException e){
-                builder.setError(getString(R.string.error_invalid_number));
-                return;
-            }
-            if (goTo < 0 || goTo >= pages) {
-                builder.setError(getString(R.string.error_out_of_range));
+            int parseResult = ParserUtils.parseJumpSeek(text);
+            if (parseResult == ParserUtils.IS_INVALID) {
+                builder.setError(getString(R.string.invalid_jump_seek));
                 return;
             }
             builder.setError(null);
-            mHelper.goTo(goTo);
+            mHelper.jumpSeek(text, FavoritesHelper.JUMP_SEEK_NEXT);
             AppHelper.hideSoftInput(dialog);
             dialog.dismiss();
         });
@@ -1140,7 +1153,7 @@ public class FavoritesScene extends BaseScene implements
     private class FavoritesHelper extends GalleryInfoContentHelper {
 
         @Override
-        protected void getPageData(final int taskId, int type, int page, String prev, String next) {
+        protected void getPageData(final int taskId, int type, int page, String prev, String next, String jumpSeek) {
             MainActivity activity = getActivity2();
             if (null == activity || null == mUrlBuilder || null == mClient ) {
                 return;
@@ -1184,7 +1197,7 @@ public class FavoritesScene extends BaseScene implements
                         url = mUrlBuilder.build();
                     }
 
-                    mUrlBuilder.setIndex(prev, next);
+                    mUrlBuilder.setIndex(prev, next, jumpSeek);
                     EhRequest request = new EhRequest();
                     request.setMethod(EhClient.METHOD_MODIFY_FAVORITES);
                     request.setCallback(new GetFavoritesListener(getContext(),
@@ -1202,7 +1215,7 @@ public class FavoritesScene extends BaseScene implements
                     }
                 });
             } else {
-                mUrlBuilder.setIndex(prev, next);
+                mUrlBuilder.setIndex(prev, next, jumpSeek);
                 String url = mUrlBuilder.build();
                 EhRequest request = new EhRequest();
                 request.setMethod(EhClient.METHOD_GET_FAVORITES);

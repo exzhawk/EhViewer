@@ -76,6 +76,7 @@ import com.hippo.ehviewer.client.exception.EhException;
 import com.hippo.ehviewer.client.parser.GalleryDetailUrlParser;
 import com.hippo.ehviewer.client.parser.GalleryListParser;
 import com.hippo.ehviewer.client.parser.GalleryPageUrlParser;
+import com.hippo.ehviewer.client.parser.ParserUtils;
 import com.hippo.ehviewer.dao.DownloadInfo;
 import com.hippo.ehviewer.dao.QuickSearch;
 import com.hippo.ehviewer.download.DownloadManager;
@@ -838,7 +839,7 @@ public final class GalleryListScene extends BaseScene
                 }
 
                 mUrlBuilder.set(list.get(position));
-                mUrlBuilder.setPageIndex(0, null, null);
+                mUrlBuilder.setPageIndex(0, null, null, null);
                 onUpdateUrlBuilder();
                 mHelper.refresh();
                 setState(STATE_NORMAL);
@@ -978,37 +979,54 @@ public final class GalleryListScene extends BaseScene
 
         final int page = mHelper.getPageForTop();
         final int pages = mHelper.getPages();
-        String hint = getString(R.string.go_to_hint, page + 1, pages);
+        String hint = getString(R.string.jump_seek_hint);
         final EditTextDialogBuilder builder = new EditTextDialogBuilder(context, null, hint);
-        builder.getEditText().setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-        final AlertDialog dialog = builder.setTitle(R.string.go_to)
-                .setPositiveButton(android.R.string.ok, null)
-                .show();
-        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (null == mHelper) {
-                    dialog.dismiss();
-                    return;
-                }
-
-                String text = builder.getText().trim();
-                int goTo;
-                try {
-                    goTo = Integer.parseInt(text) - 1;
-                } catch (NumberFormatException e){
-                    builder.setError(getString(R.string.error_invalid_number));
-                    return;
-                }
-                if (goTo < 0 || goTo >= pages) {
-                    builder.setError(getString(R.string.error_out_of_range));
-                    return;
-                }
-                builder.setError(null);
-                mHelper.goTo(goTo);
-                AppHelper.hideSoftInput(dialog);
-                dialog.dismiss();
+        builder.getEditText().setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+        final AlertDialog dialog = builder.setTitle(R.string.go_to).setMessage(R.string.jump_seek_message)
+            .setNegativeButton(R.string.prev_jump_seek, null)
+            .setPositiveButton(R.string.next_jump_seek, null)
+            .show();
+        if (mHelper != null) {
+            if (mHelper.mPrev == null) {
+                dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setEnabled(false);
             }
+            if (mHelper.mNext == null) {
+                dialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(false);
+            }
+        }
+        dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setOnClickListener(v -> {
+            if (null == mHelper) {
+                dialog.dismiss();
+                return;
+            }
+
+            String text = builder.getText().trim();
+            int parseResult = ParserUtils.parseJumpSeek(text);
+            if (parseResult == ParserUtils.IS_INVALID) {
+                builder.setError(getString(R.string.invalid_jump_seek));
+                return;
+            }
+            builder.setError(null);
+            mHelper.jumpSeek(text, GalleryListHelper.JUMP_SEEK_PREV);
+            AppHelper.hideSoftInput(dialog);
+            dialog.dismiss();
+        });
+        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(v -> {
+            if (null == mHelper) {
+                dialog.dismiss();
+                return;
+            }
+
+            String text = builder.getText().trim();
+            int parseResult = ParserUtils.parseJumpSeek(text);
+            if (parseResult == ParserUtils.IS_INVALID) {
+                builder.setError(getString(R.string.invalid_jump_seek));
+                return;
+            }
+            builder.setError(null);
+            mHelper.jumpSeek(text, GalleryListHelper.JUMP_SEEK_NEXT);
+            AppHelper.hideSoftInput(dialog);
+            dialog.dismiss();
         });
     }
 
@@ -1496,13 +1514,13 @@ public final class GalleryListScene extends BaseScene
     private class GalleryListHelper extends GalleryInfoContentHelper {
 
         @Override
-        protected void getPageData(int taskId, int type, int page, String prev, String next) {
+        protected void getPageData(int taskId, int type, int page, String prev, String next, String jumpSeek) {
             MainActivity activity = getActivity2();
             if (null == activity || null == mClient || null == mUrlBuilder) {
                 return;
             }
 
-            mUrlBuilder.setPageIndex(page, prev, next);
+            mUrlBuilder.setPageIndex(page, prev, next, jumpSeek);
             if (ListUrlBuilder.MODE_IMAGE_SEARCH == mUrlBuilder.getMode()) {
                 EhRequest request = new EhRequest();
                 request.setMethod(EhClient.METHOD_IMAGE_SEARCH);

@@ -132,6 +132,12 @@
     <string name="gallery_list_empty_hit">什么都没有找到</string>
     <string name="gallery_list_empty_hit_subscription">请至 设置->EH->我的标签 订阅标签</string>
 
+    <string name="jump_seek_message">输入符合以下格式的日期, YYYY, (YY)YY-MM or (YY)YY-MM-DD 或者要跳到的天(或星期, 月, 年)数, 以 d(或w, m, y) 标明单位以跳转. 例如 2022-11-21, 3m</string>
+    <string name="jump_seek_hint">日期或数字加单位</string>
+    <string name="prev_jump_seek">&lt; 向前跳转</string>
+    <string name="next_jump_seek">向后跳转 &gt;</string>
+    <string name="invalid_jump_seek">错误的跳转格式</string>
+
     <string name="search">搜索</string>
 
     <string name="keyword_search">关键字搜索</string>

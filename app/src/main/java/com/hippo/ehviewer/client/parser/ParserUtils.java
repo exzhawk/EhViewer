@@ -20,13 +20,44 @@ import com.hippo.yorozuya.NumberUtils;
 import com.hippo.yorozuya.StringUtils;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ParserUtils {
 
     public static final DateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US);
+
+    private static final Pattern PATTERN_OFFSET = Pattern.compile("\\d[dwmy]");
+    private static final List<SimpleDateFormat> FORMATS_DATE = Arrays.asList(
+            new SimpleDateFormat("y", Locale.US),
+            new SimpleDateFormat("y-MM", Locale.US),
+            new SimpleDateFormat("y-MM-dd", Locale.US)
+    );
+    public final static int IS_INVALID = 0;
+    public final static int IS_JUMP = 1;
+    public final static int IS_SEEK = 2;
+
+    public static synchronized int parseJumpSeek(String text) {
+        Matcher offsetMatcher = PATTERN_OFFSET.matcher(text);
+        if (offsetMatcher.find()) {
+            return IS_JUMP;
+        }
+        for (SimpleDateFormat formatDate : FORMATS_DATE) {
+            try {
+                formatDate.parse(text);
+                return IS_SEEK;
+            } catch (ParseException ignored) {
+
+            }
+        }
+        return IS_INVALID;
+    }
 
     public static synchronized String formatDate(long time) {
         return sDateFormat.format(new Date(time));

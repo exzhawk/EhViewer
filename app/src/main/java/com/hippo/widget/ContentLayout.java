@@ -195,6 +195,9 @@ public class ContentLayout extends FrameLayout {
         public static final int REFRESH_TYPE_FOOTER = 1;
         public static final int REFRESH_TYPE_PROGRESS_VIEW = 2;
 
+        public static final int JUMP_SEEK_PREV = 0;
+        public static final int JUMP_SEEK_NEXT = 1;
+
         private ProgressView mProgressView;
         private TextView mTipView;
         private ViewGroup mContentView;
@@ -240,8 +243,8 @@ public class ContentLayout extends FrameLayout {
 
         private int mNextPage;
 
-        private String mNext;
-        private String mPrev;
+        public String mNext;
+        public String mPrev;
 
         private int mCurrentTaskId;
         private int mCurrentTaskType;
@@ -265,11 +268,15 @@ public class ContentLayout extends FrameLayout {
         private final RefreshLayout.OnRefreshListener mOnRefreshListener = new RefreshLayout.OnRefreshListener() {
             @Override
             public void onHeaderRefresh() {
-                if (mStartPage > 0) {
+                if (mPrev != null) {
+                    mCurrentTaskId = mIdGenerator.nextId();
+                    mCurrentTaskType = TYPE_PRE_PAGE_KEEP_POS;
+                    getPageData(mCurrentTaskId, mCurrentTaskType, mCurrentTaskPage, mPrev, null, null);
+                } else if (mStartPage > 0) {
                     mCurrentTaskId = mIdGenerator.nextId();
                     mCurrentTaskType = TYPE_PRE_PAGE_KEEP_POS;
                     mCurrentTaskPage = mStartPage - 1;
-                    getPageData(mCurrentTaskId, mCurrentTaskType, mCurrentTaskPage, mPrev, null);
+                    getPageData(mCurrentTaskId, mCurrentTaskType, mCurrentTaskPage, null, null, null);
                 } else {
                     doRefresh();
                 }
@@ -280,7 +287,7 @@ public class ContentLayout extends FrameLayout {
                 if (mNext != null) {
                     mCurrentTaskId = mIdGenerator.nextId();
                     mCurrentTaskType = TYPE_NEXT_PAGE_KEEP_POS;
-                    getPageData(mCurrentTaskId, mCurrentTaskType, mCurrentTaskPage, null, mNext);
+                    getPageData(mCurrentTaskId, mCurrentTaskType, mCurrentTaskPage, null, mNext, null);
                 } else if (mEndPage < mPages) {
                     // Get next page
                     // Fill pages before NextPage with empty list
@@ -293,7 +300,7 @@ public class ContentLayout extends FrameLayout {
                     mCurrentTaskId = mIdGenerator.nextId();
                     mCurrentTaskType = TYPE_NEXT_PAGE_KEEP_POS;
                     mCurrentTaskPage = mEndPage;
-                    getPageData(mCurrentTaskId, mCurrentTaskType, mCurrentTaskPage, null, null);
+                    getPageData(mCurrentTaskId, mCurrentTaskType, mCurrentTaskPage, null, null, null);
                 } else {
                     Log.e(TAG, "Try to footer refresh, but mEndPage = " + mEndPage + ", mPages = " + mPages);
                     mRefreshLayout.setFooterRefreshing(false);
@@ -343,7 +350,7 @@ public class ContentLayout extends FrameLayout {
          * @param taskId task id
          * @param page the page to get
          */
-        protected abstract void getPageData(int taskId, int type, int page, String prev, String next);
+        protected abstract void getPageData(int taskId, int type, int page, String prev, String next, String jumpSeek);
 
         protected abstract Context getContext();
 
@@ -517,7 +524,6 @@ public class ContentLayout extends FrameLayout {
                         mStartPage--;
                         mPages = Math.max(mEndPage, pages);
                         mPrev = prev;
-                        mNext = next;
                         // assert mStartPage >= 0
 
                         if (data.isEmpty()) {
@@ -573,7 +579,6 @@ public class ContentLayout extends FrameLayout {
                         mEndPage++;
                         mNextPage = nextPage;
                         mPages = Math.max(mEndPage, pages);
-                        mPrev = prev;
                         mNext = next;
 
                         if (data.isEmpty()) {
@@ -782,14 +787,14 @@ public class ContentLayout extends FrameLayout {
             mCurrentTaskId = mIdGenerator.nextId();
             mCurrentTaskType = type;
             mCurrentTaskPage = page;
-            getPageData(mCurrentTaskId, mCurrentTaskType, mCurrentTaskPage, null, null);
+            getPageData(mCurrentTaskId, mCurrentTaskType, mCurrentTaskPage, null, null, null);
         }
 
         private void doRefresh() {
             mCurrentTaskId = mIdGenerator.nextId();
             mCurrentTaskType = TYPE_REFRESH;
             mCurrentTaskPage = 0;
-            getPageData(mCurrentTaskId, mCurrentTaskType, mCurrentTaskPage, null, null);
+            getPageData(mCurrentTaskId, mCurrentTaskType, mCurrentTaskPage, null, null, null);
         }
 
         /**
@@ -860,7 +865,6 @@ public class ContentLayout extends FrameLayout {
          * @throws IndexOutOfBoundsException
          */
         public void goTo(int page) throws IndexOutOfBoundsException {
-            // TODO: 2022/11/14 implement goto
             if (page < 0 || page >= mPages) {
                 throw new IndexOutOfBoundsException("Page count is " + mPages + ", page is " + page);
             } else if (page >= mStartPage && page < mEndPage) {
@@ -877,7 +881,7 @@ public class ContentLayout extends FrameLayout {
                 mCurrentTaskId = mIdGenerator.nextId();
                 mCurrentTaskType = TYPE_PRE_PAGE;
                 mCurrentTaskPage = page;
-                getPageData(mCurrentTaskId, mCurrentTaskType, mCurrentTaskPage, null, null);
+                getPageData(mCurrentTaskId, mCurrentTaskType, mCurrentTaskPage, null, null, null);
             } else if (page == mEndPage) {
                 mRefreshLayout.setHeaderRefreshing(false);
                 mRefreshLayout.setFooterRefreshing(true);
@@ -885,7 +889,7 @@ public class ContentLayout extends FrameLayout {
                 mCurrentTaskId = mIdGenerator.nextId();
                 mCurrentTaskType = TYPE_NEXT_PAGE;
                 mCurrentTaskPage = page;
-                getPageData(mCurrentTaskId, mCurrentTaskType, mCurrentTaskPage, null, null);
+                getPageData(mCurrentTaskId, mCurrentTaskType, mCurrentTaskPage, null, null, null);
             } else {
                 mRefreshLayout.setFooterRefreshing(false);
                 mRefreshLayout.setHeaderRefreshing(true);
@@ -893,7 +897,20 @@ public class ContentLayout extends FrameLayout {
                 mCurrentTaskId = mIdGenerator.nextId();
                 mCurrentTaskType = TYPE_SOMEWHERE;
                 mCurrentTaskPage = page;
-                getPageData(mCurrentTaskId, mCurrentTaskType, mCurrentTaskPage, null, null);
+                getPageData(mCurrentTaskId, mCurrentTaskType, mCurrentTaskPage, null, null, null);
+            }
+        }
+
+        public void jumpSeek(String text, int direction) {
+            mRefreshLayout.setFooterRefreshing(false);
+            mRefreshLayout.setHeaderRefreshing(true);
+
+            mCurrentTaskId = mIdGenerator.nextId();
+            mCurrentTaskType = TYPE_SOMEWHERE;
+            if (direction == JUMP_SEEK_NEXT) {
+                getPageData(mCurrentTaskId, mCurrentTaskType, 0, null, mNext, text);
+            } else {
+                getPageData(mCurrentTaskId, mCurrentTaskType, 0, mPrev, null, text);
             }
         }
 
