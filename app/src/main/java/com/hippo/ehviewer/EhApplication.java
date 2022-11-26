@@ -134,7 +134,13 @@ public class EhApplication extends RecordingApplication {
         EhEngine.initialize();
         BitmapUtils.initialize(this);
         Image.initialize(this);
-        A7Zip.loadLibrary(A7ZipExtractLite.LIBRARY, libname -> ReLinker.loadLibrary(EhApplication.this, libname));
+        try {
+            Log.d(TAG, "try loading a7zip");
+            A7Zip.loadLibrary(A7ZipExtractLite.LIBRARY, libname -> ReLinker.loadLibrary(EhApplication.this, libname));
+        } catch (UnsatisfiedLinkError ignored) {
+            Log.d(TAG, "try FORCE loading a7zip");
+            A7Zip.loadLibrary(A7ZipExtractLite.LIBRARY, libname -> ReLinker.log(message -> Log.d(TAG, message)).force().loadLibrary(EhApplication.this, libname));
+        }
 
         if (EhDB.needMerge()) {
             EhDB.mergeOldDB(this);
