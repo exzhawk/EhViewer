@@ -251,7 +251,10 @@ abstract class GalleryAdapter extends RecyclerView.Adapter<GalleryHolder> {
                     holder.readProgress.setText("");
                 } else {
                     holder.readProgress.setText((spiderInfo.startPage + 1) + "/" + spiderInfo.pages);
-                    int read255th = spiderInfo.startPage * 255 / (spiderInfo.pages - 1);
+                    int read255th = 0;
+                    if (spiderInfo.pages - 1 != 0) {
+                        read255th = spiderInfo.startPage * 255 / (spiderInfo.pages - 1);
+                    }
                     holder.readProgress.setTextColor(Color.rgb(255 - read255th, read255th, 0));
                 }
                 holder.thumb.load(EhCacheKeyFactory.getThumbKey(gi.gid), gi.thumb);
