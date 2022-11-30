@@ -128,7 +128,7 @@ public class DownloadsScene extends ToolbarScene
     public static final String ACTION_CLEAR_DOWNLOAD_SERVICE = "clear_download_service";
     private static final int REQUEST_GALLERY_CLOSE = 0;
 
-    private static Pattern authorPattern = Pattern.compile("^(?:\\([^\\[\\]\\(\\)]*\\))?\\s*\\[([^\\[\\]\\(\\)]*)(?:\\(([^\\[\\]\\(\\)]*)\\))?\\]");
+    private static final Pattern AUTHOR_PATTERN = Pattern.compile("^(?:\\([^\\[\\]\\(\\)]*\\))?\\s*\\[([^\\[\\]\\(\\)]*)(?:\\(([^\\[\\]\\(\\)]*)\\))?\\]");
 
     private int lastPosition;
     /*---------------
@@ -483,7 +483,7 @@ public class DownloadsScene extends ToolbarScene
     }
 
     private static String getAuthor(String title) {
-        Matcher matcher = authorPattern.matcher(title);
+        Matcher matcher = AUTHOR_PATTERN.matcher(title);
         if (!matcher.find())
             return "";
         if (matcher.group(2) != null) {
@@ -609,7 +609,7 @@ public class DownloadsScene extends ToolbarScene
                 Collections.sort(mList, new Comparator<DownloadInfo>() {
                     @Override
                     public int compare(DownloadInfo o1, DownloadInfo o2) {
-                        return o1.title.compareTo(o2.title);
+                        return o1.title.compareToIgnoreCase(o2.title);
                     }
                 });
                 if (mAdapter != null) {
@@ -624,9 +624,9 @@ public class DownloadsScene extends ToolbarScene
                     public int compare(DownloadInfo o1, DownloadInfo o2) {
                         String a1 = getAuthor(o1);
                         String a2 = getAuthor(o2);
-                        int aCompare = a1.compareTo(a2);
+                        int aCompare = a1.compareToIgnoreCase(a2);
                         if (aCompare == 0) {
-                            return o1.title.compareTo(o2.title);
+                            return o1.title.compareToIgnoreCase(o2.title);
                         } else {
                             return aCompare;
                         }
