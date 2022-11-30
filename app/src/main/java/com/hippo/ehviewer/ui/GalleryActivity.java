@@ -333,6 +333,7 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
                 .setEdgeColor(AttrResources.getAttrColor(this, R.attr.colorEdgeEffect) & 0xffffff | 0x33000000)
                 .setPagerInterval(Settings.getShowPageInterval() ? resources.getDimensionPixelOffset(R.dimen.gallery_pager_interval) : 0)
                 .setScrollInterval(Settings.getShowPageInterval() ? resources.getDimensionPixelOffset(R.dimen.gallery_scroll_interval) : 0)
+                .setSnapPageWhenScroll(Settings.getSnapPageWhenScroll())
                 .setPageMinHeight(resources.getDimensionPixelOffset(R.dimen.gallery_page_min_height))
                 .setPageInfoInterval(resources.getDimensionPixelOffset(R.dimen.gallery_page_info_interval))
                 .setProgressColor(ResourcesUtils.getAttrColor(this, R.attr.colorPrimary))
@@ -812,6 +813,7 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
         private final SwitchCompat mReverseNextGallery;
         private final SwitchCompat mAssignNextPageTapToNextGallery;
         private final SwitchCompat mAssignSliderTapToNextGallery;
+        private final SwitchCompat mSnapPageWhenScroll;
         private final SwitchCompat mKeepScreenOn;
         private final SwitchCompat mShowClock;
         private final SwitchCompat mShowProgress;
@@ -833,6 +835,7 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
             mReverseNextGallery = (SwitchCompat) mView.findViewById(R.id.reverse_next_gallery);
             mAssignNextPageTapToNextGallery = (SwitchCompat) mView.findViewById(R.id.assign_next_page_tap_to_next_gallery);
             mAssignSliderTapToNextGallery = (SwitchCompat) mView.findViewById(R.id.assign_slider_tap_to_next_gallery);
+            mSnapPageWhenScroll = (SwitchCompat) mView.findViewById(R.id.snap_page_when_scroll);
             mKeepScreenOn = (SwitchCompat) mView.findViewById(R.id.keep_screen_on);
             mShowClock = (SwitchCompat) mView.findViewById(R.id.show_clock);
             mShowProgress = (SwitchCompat) mView.findViewById(R.id.show_progress);
@@ -851,6 +854,7 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
             mReverseNextGallery.setChecked(Settings.getReverseNextGallery());
             mAssignNextPageTapToNextGallery.setChecked(Settings.getAssignNextPageTapToNextGallery());
             mAssignSliderTapToNextGallery.setChecked(Settings.getAssignSliderTapToNextGallery());
+            mSnapPageWhenScroll.setChecked(Settings.getSnapPageWhenScroll());
             mKeepScreenOn.setChecked(Settings.getKeepScreenOn());
             mShowClock.setChecked(Settings.getShowClock());
             mShowProgress.setChecked(Settings.getShowProgress());
@@ -887,7 +891,8 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
             boolean autoOpenNextGallery = mAutoOpenNextGallery.isChecked();
             boolean reverseNextGallery = mReverseNextGallery.isChecked();
             boolean assignNextPageTapToNextGallery = mAssignNextPageTapToNextGallery.isChecked();
-            boolean assignSliderTapToNextGallery =mAssignSliderTapToNextGallery.isChecked();
+            boolean assignSliderTapToNextGallery = mAssignSliderTapToNextGallery.isChecked();
+            boolean snapPageWhenScroll = mSnapPageWhenScroll.isChecked();
             boolean keepScreenOn = mKeepScreenOn.isChecked();
             boolean showClock = mShowClock.isChecked();
             boolean showProgress = mShowProgress.isChecked();
@@ -908,6 +913,7 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
             Settings.putReverseNextGallery(reverseNextGallery);
             Settings.putAssignNextPageTapToNextGallery(assignNextPageTapToNextGallery);
             Settings.putAssignSliderTapToNextGallery(assignSliderTapToNextGallery);
+            Settings.putSnapPageWhenScroll(snapPageWhenScroll);
             Settings.putKeepScreenOn(keepScreenOn);
             Settings.putShowClock(showClock);
             Settings.putShowProgress(showProgress);
@@ -942,6 +948,7 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
             GalleryActivity.this.mReverseNextGallery = reverseNextGallery;
             GalleryActivity.this.mAssignNextPageTapToNextGallery = assignNextPageTapToNextGallery;
             GalleryActivity.this.mAssignSliderTapToNextGallery = assignSliderTapToNextGallery;
+            mGalleryView.setSnapPageWhenScroll(snapPageWhenScroll);
             if (keepScreenOn) {
                 getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             } else {

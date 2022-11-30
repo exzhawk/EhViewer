@@ -72,6 +72,11 @@
         android:defaultValue="false" />
 
     <com.hippo.preference.SwitchPreference
+        android:key="snap_page_when_scroll"
+        android:title="@string/settings_snap_page_when_scroll"
+        android:defaultValue="false" />
+
+    <com.hippo.preference.SwitchPreference
         android:key="keep_screen_on"
         android:title="@string/settings_read_keep_screen_on"
         android:defaultValue="false" />

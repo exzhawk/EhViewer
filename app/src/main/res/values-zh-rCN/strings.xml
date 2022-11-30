@@ -519,6 +519,7 @@
     <string name="settings_reverse_next_gallery">打开下一画廊时逆序</string>
     <string name="settings_assign_next_page_tap_to_next_gallery">点击下一页区域时打开下一画廊</string>
     <string name="settings_assign_slider_tap_to_next_gallery">点击滑条区域时打开下一画廊</string>
+    <string name="settings_snap_page_when_scroll">从上至下阅读时自动对齐顶部</string>
     <string name="settings_read_keep_screen_on">屏幕常亮</string>
     <string name="settings_read_show_clock">显示时钟</string>
     <string name="settings_read_show_progress">显示进度</string>

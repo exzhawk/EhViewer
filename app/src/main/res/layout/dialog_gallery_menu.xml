@@ -151,6 +151,13 @@
             android:textColor="?android:attr/textColorPrimary"/>
 
         <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/snap_page_when_scroll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_snap_page_when_scroll"
+            android:textColor="?android:attr/textColorPrimary"/>
+
+        <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/keep_screen_on"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

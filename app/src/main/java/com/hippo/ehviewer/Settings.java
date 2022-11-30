@@ -515,6 +515,17 @@ public class Settings {
         putBoolean(KEY_ASSIGN_SLIDER_TAP_TO_NEXT_GALLERY, value);
     }
 
+    private static final String KEY_SNAP_PAGE_WHEN_SCROLL = "snap_page_when_scroll";
+    private static final boolean DEFAULT_KEY_SNAP_PAGE_WHEN_SCROLL = false;
+
+    public static boolean getSnapPageWhenScroll() {
+        return getBoolean(KEY_SNAP_PAGE_WHEN_SCROLL, DEFAULT_KEY_SNAP_PAGE_WHEN_SCROLL);
+    }
+
+    public static void putSnapPageWhenScroll(boolean value) {
+        putBoolean(KEY_SNAP_PAGE_WHEN_SCROLL, value);
+    }
+
     private static final String KEY_KEEP_SCREEN_ON = "keep_screen_on";
     private static final boolean DEFAULT_KEEP_SCREEN_ON = false;
 

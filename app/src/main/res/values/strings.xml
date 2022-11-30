@@ -562,6 +562,7 @@
     <string name="settings_reverse_next_gallery">Reverse next/prev gallery</string>
     <string name="settings_assign_next_page_tap_to_next_gallery">Tap next page area to next gallery</string>
     <string name="settings_assign_slider_tap_to_next_gallery">Tap slider area to next gallery</string>
+    <string name="settings_snap_page_when_scroll">Snap page top when scroll vertically</string>
     <string name="settings_read_keep_screen_on">Keep screen on</string>
     <string name="settings_read_show_clock">Show clock</string>
     <string name="settings_read_show_progress">Show progress</string>
