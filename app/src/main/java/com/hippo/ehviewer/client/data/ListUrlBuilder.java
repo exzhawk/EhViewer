@@ -50,7 +50,7 @@ public class ListUrlBuilder implements Cloneable, Parcelable {
     public static final int MODE_IMAGE_SEARCH = 0x4;
     public static final int MODE_SUBSCRIPTION = 0x5;
 
-    public static final int DEFAULT_ADVANCE = AdvanceSearchTable.SNAME | AdvanceSearchTable.STAGS;
+    public static final int DEFAULT_ADVANCE = 0x00;
     public static final int DEFAULT_MIN_RATING = 2;
 
     @Mode
@@ -382,44 +382,14 @@ public class ListUrlBuilder implements Cloneable, Parcelable {
                         enableAdvanceSearch = true;
                     }
                     break;
-                case "f_sname":
+                case "f_sh":
                     if ("on".equals(value)) {
-                        advanceSearch |= AdvanceSearchTable.SNAME;
-                    }
-                    break;
-                case "f_stags":
-                    if ("on".equals(value)) {
-                        advanceSearch |= AdvanceSearchTable.STAGS;
-                    }
-                    break;
-                case "f_sdesc":
-                    if ("on".equals(value)) {
-                        advanceSearch |= AdvanceSearchTable.SDESC;
-                    }
-                    break;
-                case "f_storr":
-                    if ("on".equals(value)) {
-                        advanceSearch |= AdvanceSearchTable.STORR;
+                        advanceSearch |= AdvanceSearchTable.SH;
                     }
                     break;
                 case "f_sto":
                     if ("on".equals(value)) {
                         advanceSearch |= AdvanceSearchTable.STO;
-                    }
-                    break;
-                case "f_sdt1":
-                    if ("on".equals(value)) {
-                        advanceSearch |= AdvanceSearchTable.SDT1;
-                    }
-                    break;
-                case "f_sdt2":
-                    if ("on".equals(value)) {
-                        advanceSearch |= AdvanceSearchTable.SDT2;
-                    }
-                    break;
-                case "f_sh":
-                    if ("on".equals(value)) {
-                        advanceSearch |= AdvanceSearchTable.SH;
                     }
                     break;
                 case "f_sfl":
@@ -528,25 +498,17 @@ public class ListUrlBuilder implements Cloneable, Parcelable {
                 // Advance search
                 if (mAdvanceSearch != -1) {
                     ub.addQuery("advsearch", "1");
-                    if((mAdvanceSearch & AdvanceSearchTable.SNAME) != 0) ub.addQuery("f_sname", "on");
-                    if((mAdvanceSearch & AdvanceSearchTable.STAGS) != 0) ub.addQuery("f_stags", "on");
-                    if((mAdvanceSearch & AdvanceSearchTable.SDESC) != 0) ub.addQuery("f_sdesc", "on");
-                    if((mAdvanceSearch & AdvanceSearchTable.STORR) != 0) ub.addQuery("f_storr", "on");
-                    if((mAdvanceSearch & AdvanceSearchTable.STO) != 0) ub.addQuery("f_sto", "on");
-                    if((mAdvanceSearch & AdvanceSearchTable.SDT1) != 0) ub.addQuery("f_sdt1", "on");
-                    if((mAdvanceSearch & AdvanceSearchTable.SDT2) != 0) ub.addQuery("f_sdt2", "on");
                     if((mAdvanceSearch & AdvanceSearchTable.SH) != 0) ub.addQuery("f_sh", "on");
+                    if((mAdvanceSearch & AdvanceSearchTable.STO) != 0) ub.addQuery("f_sto", "on");
                     if((mAdvanceSearch & AdvanceSearchTable.SFL) != 0) ub.addQuery("f_sfl", "on");
                     if((mAdvanceSearch & AdvanceSearchTable.SFU) != 0) ub.addQuery("f_sfu", "on");
                     if((mAdvanceSearch & AdvanceSearchTable.SFT) != 0) ub.addQuery("f_sft", "on");
                     // Set min star
                     if (mMinRating != -1) {
-                        ub.addQuery("f_sr", "on");
                         ub.addQuery("f_srdd", mMinRating);
                     }
                     // Pages
                     if (mPageFrom != -1 || mPageTo != -1) {
-                        ub.addQuery("f_sp", "on");
                         ub.addQuery("f_spf", mPageFrom != -1 ? Integer.toString(mPageFrom) : "");
                         ub.addQuery("f_spt", mPageTo != -1 ? Integer.toString(mPageTo) : "");
                     }
