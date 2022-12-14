@@ -26,6 +26,7 @@ import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,12 +41,15 @@ import androidx.webkit.WebViewFeature;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.hippo.ehviewer.EhApplication;
+import com.hippo.ehviewer.EhProxySelector;
 import com.hippo.ehviewer.R;
+import com.hippo.ehviewer.Settings;
 import com.hippo.ehviewer.client.EhCookieStore;
 import com.hippo.ehviewer.client.EhUrl;
 import com.hippo.ehviewer.widget.DialogWebChromeClient;
 import com.hippo.widget.ProgressView;
 
+import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.ProxySelector;
 import java.net.URI;
@@ -56,6 +60,8 @@ import okhttp3.Cookie;
 import okhttp3.HttpUrl;
 
 public class UConfigActivity extends ToolbarActivity {
+
+  private static final String TAG = UConfigActivity.class.getSimpleName();
 
   private WebView webView;
   private ProgressView progress;
@@ -94,24 +100,31 @@ public class UConfigActivity extends ToolbarActivity {
     webView.getSettings().setJavaScriptEnabled(true);
     webView.setWebViewClient(new UConfigWebViewClient());
     webView.setWebChromeClient(new DialogWebChromeClient(this));
-    if (WebViewFeature.isFeatureSupported(WebViewFeature.PROXY_OVERRIDE)){
-      ProxySelector proxySelector=getEhProxySelector(getApplication());
-      try {
-        List<Proxy> proxyList = proxySelector.select(new URI(url));
-        if(proxyList.size()==0){
-          this.setDirect();
-        }
-        else{
-          Proxy proxy=proxyList.get(0);
-          if(proxy.type() == Proxy.Type.DIRECT){
-            this.setDirect();
+    if (WebViewFeature.isFeatureSupported(WebViewFeature.PROXY_OVERRIDE)) {
+      int type = Settings.getProxyType();
+      switch (type) {
+        case EhProxySelector.TYPE_HTTP:
+        case EhProxySelector.TYPE_SOCKS:
+          String ip_host = Settings.getProxyIp();
+          int port = Settings.getProxyPort();
+          setProxy((type == EhProxySelector.TYPE_HTTP ? "HTTP" : "SOCKS") + "://" + ip_host + ":" + port);
+          break;
+        case EhProxySelector.TYPE_SYSTEM:
+          try {
+            ProxySelector proxySelector = getEhProxySelector(getApplication());
+            List<Proxy> proxyList = proxySelector.select(new URI(url));
+            if (proxyList != null && !proxyList.isEmpty()) {
+              Proxy proxy = proxyList.get(0);
+              InetSocketAddress address = (InetSocketAddress) proxy.address();
+              String proxyUrl = proxy.type().name() + "://" + address.getHostString() + ":" + address.getPort();
+              setProxy(proxyUrl);
+              break;
+            }
+          } catch (URISyntaxException e) {
+            e.printStackTrace();
           }
-          else{
-            setProxy(proxy);
-          }
-        }
-      } catch (URISyntaxException e) {
-        e.printStackTrace();
+        case EhProxySelector.TYPE_DIRECT:
+          setDirect();
       }
     }
 
@@ -122,12 +135,14 @@ public class UConfigActivity extends ToolbarActivity {
   }
 
   private void setDirect() {
+    Log.v(TAG, "Load UConfig via Direct");
     ProxyController.getInstance().clearProxyOverride(command -> {
     }, () -> {
     });
   }
-  private void setProxy(Proxy proxy) {
-    String proxyUrl = proxy.type().name()+":/"+proxy.address();
+
+  private void setProxy(String proxyUrl) {
+    Log.v(TAG, "Load UConfig via " + proxyUrl);
     ProxyConfig proxyConfig = new ProxyConfig.Builder()
             .addProxyRule(proxyUrl)
             .build();
