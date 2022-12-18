@@ -59,7 +59,9 @@ class GalleryHolder extends RecyclerView.ViewHolder implements View.OnClickListe
         favourited = itemView.findViewById(R.id.favourited);
         downloaded = itemView.findViewById(R.id.downloaded);
         start2 = itemView.findViewById(R.id.start2);
-        start2.setOnClickListener(this);
+        if (start2 != null) {
+            start2.setOnClickListener(this);
+        }
         readProgress=itemView.findViewById(R.id.read_progress);
 
     }
