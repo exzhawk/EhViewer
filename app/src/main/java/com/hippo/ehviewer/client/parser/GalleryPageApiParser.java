@@ -50,8 +50,8 @@ public class GalleryPageApiParser {
             if (m.find()) {
                 result.skipHathKey = StringUtils.unescapeXml(StringUtils.trim(m.group(1)));
             }
-            String i7 = jo.getString("i7");
-            m = PATTERN_ORIGIN_IMAGE_URL.matcher(i7);
+//            String i7 = jo.getString("i7");
+            m = PATTERN_ORIGIN_IMAGE_URL.matcher(i6);
             if (m.find()) {
                 result.originImageUrl = StringUtils.unescapeXml(m.group(1)) + "fullimg.php" + StringUtils.unescapeXml(m.group(2));
             }
