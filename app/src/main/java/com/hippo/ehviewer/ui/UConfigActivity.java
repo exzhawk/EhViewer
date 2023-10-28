@@ -120,7 +120,7 @@ public class UConfigActivity extends ToolbarActivity {
               setProxy(proxyUrl);
               break;
             }
-          } catch (URISyntaxException e) {
+          } catch (URISyntaxException | NullPointerException e) {
             e.printStackTrace();
           }
         case EhProxySelector.TYPE_DIRECT:
