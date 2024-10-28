@@ -68,9 +68,9 @@ public class GalleryDetailParser {
     private static final Pattern PATTERN_PAGES = Pattern.compile("<tr><td[^<>]*>Length:</td><td[^<>]*>([\\d,]+) pages</td></tr>");
     private static final Pattern PATTERN_PREVIEW_PAGES = Pattern.compile("<td[^>]+><a[^>]+>([\\d,]+)</a></td><td[^>]+>(?:<a[^>]+>)?&gt;(?:</a>)?</td>");
     private static final Pattern PATTERN_NORMAL_PREVIEW = Pattern.compile("<div class=\"gdtm\"[^<>]*><div[^<>]*width:(\\d+)[^<>]*height:(\\d+)[^<>]*\\((.+?)\\)[^<>]*-(\\d+)px[^<>]*><a[^<>]*href=\"(.+?)\"[^<>]*><img alt=\"([\\d,]+)\"");
-    private static final Pattern PATTERN_NORMAL_PREVIEW_NEW=Pattern.compile("<a[^<>]*href=\"([^\"]+)\"><div title=\"Page (\\d+): [^\"]+\" style=\"width:(\\d+)[^<>]*height:(\\d+)[^<>]*\\((.+?)\\)[^<>]*-(\\d+)px");
+    private static final Pattern PATTERN_NORMAL_PREVIEW_NEW=Pattern.compile("<a[^<>]*href=\"([^\"]+)\">(?:<div>)?<div title=\"Page (\\d+): [^\"]+\" style=\"width:(\\d+)[^<>]*height:(\\d+)[^<>]*\\((.+?)\\)[^<>]*-(\\d+)px");
     private static final Pattern PATTERN_LARGE_PREVIEW = Pattern.compile("<div class=\"gdtl\".+?<a href=\"(.+?)\"><img alt=\"([\\d,]+)\".+?src=\"(.+?)\"");
-    private static final Pattern PATTERN_LARGE_PREVIEW_NEW = Pattern.compile("<a[^<>]*href=\"([^\"]+)\"><div title=\"Page (\\d+): [^\"]+\"[^<>]*\\((.+?)\\)[^<>]*\">");
+    private static final Pattern PATTERN_LARGE_PREVIEW_NEW = Pattern.compile("<a[^<>]*href=\"([^\"]+)\">(?:<div>)?<div title=\"Page (\\d+): [^\"]+\"[^<>]*\\((.+?)\\)[^<>]*\">");
 
     private static final GalleryTagGroup[] EMPTY_GALLERY_TAG_GROUP_ARRAY = new GalleryTagGroup[0];
     private static final GalleryCommentList EMPTY_GALLERY_COMMENT_ARRAY = new GalleryCommentList(new GalleryComment[0], false);
