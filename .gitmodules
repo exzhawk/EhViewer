@@ -1,3 +1,7 @@
 [submodule "GLGallery"]
 	path = GLGallery
 	url = https://github.com/exzhawk/GLGallery.git
+[submodule "Image"]
+	path = Image
+	url = https://github.com/exzhawk/Image.git
+	branch = ehviewer

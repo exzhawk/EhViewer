@@ -31,6 +31,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.collection.LruCache;
+import androidx.multidex.MultiDex;
 import com.getkeepsafe.relinker.ReLinker;
 import com.hippo.a7zip.A7Zip;
 import com.hippo.a7zip.A7ZipExtractLite;
@@ -67,6 +68,12 @@ import java.util.concurrent.TimeUnit;
 import okhttp3.OkHttpClient;
 
 public class EhApplication extends RecordingApplication {
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
 
     private static final String TAG = EhApplication.class.getSimpleName();
     private static final String KEY_GLOBAL_STUFF_NEXT_ID = "global_stuff_next_id";

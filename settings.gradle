@@ -1,3 +1,5 @@
 include ':app', ':daogenerator'
 include ':GLGallery'
 project(':GLGallery').projectDir=new File('./GLGallery/library')
+include ':library'
+project(':library').projectDir = new File('./Image/library/')
