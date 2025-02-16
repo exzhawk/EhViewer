@@ -18,6 +18,7 @@ package com.hippo.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.ColorDrawable;
@@ -289,7 +290,14 @@ public class LoadImageView extends FixedAspectImageView implements Unikery<Image
         clearDrawable();
 
         if (Integer.MIN_VALUE != mOffsetX) {
-            drawable = new PreciselyClipDrawable(drawable, mOffsetX, mOffsetY, mClipWidth, mClipHeight);
+            Bitmap clipBitmap=Bitmap.createBitmap(value.getBitmap(),mOffsetX,mOffsetY,mClipWidth,mClipHeight);
+            ImageBitmap clipImageBitmap=ImageBitmap.create(clipBitmap);
+            try {
+                drawable=new ImageDrawable(clipImageBitmap);
+            } catch (RecycledException e) {
+                Log.d(TAG, "The image is recycled", e);
+                return false;
+            }
         }
 
         onPreSetImageDrawable(drawable, true);
