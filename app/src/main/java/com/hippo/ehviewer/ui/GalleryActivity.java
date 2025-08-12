@@ -522,7 +522,6 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
 
         // Check keyboard and Dpad
         switch (keyCode) {
-            case KeyEvent.KEYCODE_PAGE_UP:
             case KeyEvent.KEYCODE_DPAD_UP:
                 if (mLayoutMode == GalleryView.LAYOUT_RIGHT_TO_LEFT) {
                     mGalleryView.pageRight();
@@ -533,7 +532,6 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
             case KeyEvent.KEYCODE_DPAD_LEFT:
                 mGalleryView.pageLeft();
                 return true;
-            case KeyEvent.KEYCODE_PAGE_DOWN:
             case KeyEvent.KEYCODE_DPAD_DOWN:
                 if (mLayoutMode == GalleryView.LAYOUT_RIGHT_TO_LEFT) {
                     mGalleryView.pageLeft();
@@ -548,6 +546,12 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
             case KeyEvent.KEYCODE_SPACE:
             case KeyEvent.KEYCODE_MENU:
                 onTapMenuArea();
+                return true;
+            case KeyEvent.KEYCODE_PAGE_DOWN:
+                mGalleryView.nextGallery();
+                return true;
+            case KeyEvent.KEYCODE_PAGE_UP:
+                mGalleryView.prevGallery();
                 return true;
         }
 
